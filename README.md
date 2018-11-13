@@ -1,6 +1,35 @@
 # clase-computaciongrafica-2019-1
 Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
 
+## Requerimientos del proyecto
+
+**Objetivo:** Crear un renderizador de una escena aplicando técnicas de graficación ray-tracing,
+
+**Elementos a implementar**
+
+- [ ] (5%) Leer de un archivo la configuración de su mundo, el formato que se debe manejar son archivos YAML (Obligatorio).
+- [ ] Se podrá configurar los siguientes elementos.
+ - [ ] (10%) Luces: Se pondrá configurar los diferentes tipos de luces.
+   - [ ] Spot
+   - [ ] Point
+ - [ ] (10%) Modelos: Los modelos geométricos que se debe implementar son:
+   - [ ] Cilindros
+   - [ ] Esferas
+   - [ ] Prismas
+   - [ ] Modelos en formato OBJ
+   - [ ] Planos
+ - [ ] (10%) Se podrá colocar una textura a cada modelo, si el objeto es reflectivo o refractivo.
+ - [ ] (10%) Múltiples cámaras.
+   - [ ] Manejar la cámara en primera persona y la cámara orbital (Arcball).
+     - [ ] Para ambas cámaras los movimientos de pitch y yaw realizarlos con el mouse.
+   - [ ] Al seleccionar un objeto en específico de la escena crear una nueva cámara Orbital que permite visualizar al objeto desde todos los ángulos.
+   - [ ] Se podrá cambiar las múltiples cámaras con combinaciones de teclas.
+- [ ] (10%) Configuración del orden del ray-tracing.
+- [ ] (10%) Para los objetos sólidos manejar sombras.
+- [ ] (35%) Optimizar el ray tracing con CUDA:
+ - [ ] Ray-Tracing en paralelo, el reto está en la recursividad y concurrencia de los núcleos de CUDA.
+ - [ ] Realizar una partición del mundo en Octrees utilizando CUDA.
+
 ## Recursos consultados
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
 
