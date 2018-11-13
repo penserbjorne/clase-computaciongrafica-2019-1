@@ -34,7 +34,7 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
 
 En construcción.
 
-Utilizar como ejemplo de parámetro el archivo [example-wordl.yaml](./example-wordl.yaml).
+Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-world.yaml).
 
 ## Recursos consultados
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
