@@ -1,0 +1,107 @@
+# Example Document, under construction ;@
+
+- # SpotLigh
+ typeObject: spotlight
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+
+- # PointLight
+ typeObject: pointlight
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+
+- # Cylinder
+ typeObject: cylinder
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+ texture: some|reflective|refractive
+ transparency: value
+ radius: value
+ height: value
+
+- # Sphere
+ typeObject: sphere
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+ texture: some|reflective|refractive
+ transparency: value
+ radius: value
+
+- # Prism
+ typeObject: prism
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+ texture: some|reflective|refractive
+ transparency: value
+ sides: value
+ radius: value
+ height: value
+
+- # OBJ Model
+ typeObject: objModel
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+ texture: some|reflective|refractive
+ transparency: value
+ scale: value
+
+- # Plane
+ typeObject: plane
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+ texture: some|reflective|refractive
+ transparency: value
+ width: value
+ height: value
+
+- # Camera1
+ typeObject: camera
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+ lookAt: {
+  x: value,
+  y: value,
+  z: value
+ }
+
+- # Camera2
+ typeObject: camera
+ position: {
+  x: value,
+  y: value,
+  z: value
+ }
+ lookAt: {
+  x: value,
+  y: value,
+  z: value
+ }
+
+- # RayTrace Order
+ typeObject: raytrace
+ order: indexOrder
+ method: fordward|backward

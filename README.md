@@ -30,6 +30,12 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
    - [ ] Ray-Tracing en paralelo, el reto está en la recursividad y concurrencia de los núcleos de CUDA.
    - [ ] Realizar una partición del mundo en Octrees utilizando CUDA.
 
+## Uso
+
+En construcción.
+
+Utilizar como ejemplo de parámetro el archivo [example-wordl.yaml](./example-wordl.yaml).
+
 ## Recursos consultados
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
 
