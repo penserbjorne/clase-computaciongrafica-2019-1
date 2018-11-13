@@ -2,27 +2,15 @@
 
 - # SpotLigh
  typeObject: spotlight
- position: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
 
 - # PointLight
  typeObject: pointlight
- position: {
-  x: value,
-  y: value,
-  z: value
- }
-
+ position: [xValue, yValue, zValue]
+ 
 - # Cylinder
  typeObject: cylinder
- position: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
  texture: some|reflective|refractive
  transparency: value
  radius: value
@@ -30,22 +18,14 @@
 
 - # Sphere
  typeObject: sphere
- position: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
  texture: some|reflective|refractive
  transparency: value
  radius: value
 
 - # Prism
  typeObject: prism
- position: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
  texture: some|reflective|refractive
  transparency: value
  sides: value
@@ -54,22 +34,14 @@
 
 - # OBJ Model
  typeObject: objModel
- position: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
  texture: some|reflective|refractive
  transparency: value
  scale: value
 
 - # Plane
  typeObject: plane
- position: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
  texture: some|reflective|refractive
  transparency: value
  width: value
@@ -77,29 +49,13 @@
 
 - # Camera1
  typeObject: camera
- position: {
-  x: value,
-  y: value,
-  z: value
- }
- lookAt: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
+ lookAt: [xValue, yValue, zValue]
 
 - # Camera2
  typeObject: camera
- position: {
-  x: value,
-  y: value,
-  z: value
- }
- lookAt: {
-  x: value,
-  y: value,
-  z: value
- }
+ position: [xValue, yValue, zValue]
+ lookAt: [xValue, yValue, zValue]
 
 - # RayTrace Order
  typeObject: raytrace
