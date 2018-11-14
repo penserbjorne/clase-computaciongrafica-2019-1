@@ -33,7 +33,9 @@ enum EmyTypeOfTexture {
 // Enum to clasify objects
 enum EmyObjectType {
 	// MyObjecttype = mot
-	motSpotlight = 0,
+	motBase = 0,
+	mot3dBase,
+	motSpotlight,
 	motPointlight,
 	motCylinder,
 	motSphere,
@@ -59,10 +61,10 @@ public:
 
 	EmyObjectType getObjectType();
 
-	bool setPsotion(float x, float y, float z);
+	bool setPosition(float x, float y, float z);
 	float3 getPosition();
 
-private:
+protected:
 	EmyObjectType _type;
 	float3 _position;
 };
@@ -209,6 +211,7 @@ public:
 	EtypeOfMethodForRayTrace getTypeOfMethod();
 
 private:
+	EmyObjectType _type;
 	int _order;
 	EtypeOfMethodForRayTrace _method;
 };
