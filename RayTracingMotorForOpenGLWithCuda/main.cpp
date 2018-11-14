@@ -7,34 +7,8 @@
 // Standar GL libraries
 #include <GL/glut.h>
 
-// Struct to define vector type objects for 2D and 3D space
-struct float2
-{
-	float2(float _x = 0.0f, float _y = 0.0f) : x(_x), y(_y) {}
-
-	float x;
-	float y;
-};
-
-struct float3
-{
-	float3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) : x(_x), y(_y), z(_z) {}
-
-	float x;
-	float y;
-	float z;
-};
-
-// Enumeration to store diferent scenes
-enum ESceneType
-{
-	ST_Scene1 = 0,
-	ST_Scene2,
-	ST_Scene3,
-	ST_Scene4,
-	ST_NumScenes
-};
-ESceneType g_eCurrentScene = ST_Scene1;
+// My unhappy Code :D
+#include "myObjectTypes.h"
 
 // GL variables to use with GLUT
 int g_iWindowWidth = 512;
@@ -65,9 +39,6 @@ void ReshapeGL(int w, int h);
 void DrawRectangle(float width, float height);
 void DrawCircle(float radius, int numSides = 8);
 void DrawTriangle(float2 p1, float2 p2, float2 p3);
-void DrawCube(float width, float height, float depth);
-void DrawSphere(float radius);
-void DrawPyramid(float scale = 1.0f);
 
 // Clean up resources
 void Cleanup(int exitCode, bool bExit = true);
@@ -83,41 +54,16 @@ void RenderScene3();
 void RenderScene4();
 
 // Drawer!
-void DisplayGL()
-{
+void DisplayGL(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	switch (g_eCurrentScene)
-	{
-		case ST_Scene1:
-		{
-			RenderScene1();
-		}
-		break;
-		case ST_Scene2:
-		{
-			RenderScene2();
-		}
-		break;
-		case ST_Scene3:
-		{
-			RenderScene3();
-		}
-		break;
-		case ST_Scene4:
-		{
-			RenderScene4();
-		}
-		break;
-	}
-
+	// Render Stuff
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
 
 // To update the logic of our demo :D
-void IdleGL()
-{
+void IdleGL(){
 	// Update our simulation
 	g_CurrentTicks = std::clock();
 	float deltaTicks = (g_CurrentTicks - g_PreviousTicks);
@@ -141,56 +87,41 @@ void IdleGL()
 	glutPostRedisplay();
 }
 
-void KeyboardGL(unsigned char c, int x, int y)
-{
-	// Store the current scene so we can test if it has changed later.
-	ESceneType currentScene = g_eCurrentScene;
+void KeyboardGL(unsigned char c, int x, int y){
 
-	switch (c)
-	{
-		case '1':
-		{
+	switch (c){
+		case '1':{
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);                         // White background
-			g_eCurrentScene = ST_Scene1;
 		}
 		break;
-		case '2':
-		{
+		case '2':{
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);                         // Black background
-			g_eCurrentScene = ST_Scene2;
 		}
 		break;
-		case '3':
-		{
+		case '3':{
 			glClearColor(0.27f, 0.27f, 0.27f, 1.0f);                      // Dark-Gray background
-			g_eCurrentScene = ST_Scene3;
 		}
 		break;
-		case '4':
-		{
+		case '4':{
 			glClearColor(0.73f, 0.73f, 0.73f, 1.0f);                      // Light-Gray background
-			g_eCurrentScene = ST_Scene4;
 		}
 		break;
 		case 's':
-		case 'S':
-		{
+		case 'S':{
 			std::cout << "Shade Model: GL_SMOOTH" << std::endl;
 			// Switch to smooth shading model
 			glShadeModel(GL_SMOOTH);
 		}
 		break;
 		case 'f':
-		case 'F':
-		{
+		case 'F':{
 			std::cout << "Shade Model: GL_FLAT" << std::endl;
 			// Switch to flat shading model
 			glShadeModel(GL_FLAT);
 		}
 		break;
 		case 'r':
-		case 'R':
-		{
+		case 'R':{
 			std::cout << "Reset Parameters..." << std::endl;
 			g_fRotate1 = g_fRotate2 = g_fRotate3 = 0.0f;
 		}
@@ -206,50 +137,39 @@ void KeyboardGL(unsigned char c, int x, int y)
 		break;
 	}
 
-	if (currentScene != g_eCurrentScene)
-	{
-		std::cout << "Changed Render Scene: " << (g_eCurrentScene + 1) << std::endl;
-	}
-
 	glutPostRedisplay();
 }
 
-void MouseGL(int button, int state, int x, int y)
-{
+void MouseGL(int button, int state, int x, int y){
 
 }
 
-void MotionGL(int x, int y)
-{
+void MotionGL(int x, int y){
 
 }
 
-void PassiveMotionGL(int x, int y)
-{
+void PassiveMotionGL(int x, int y){
 
 }
 
 // Only destroy the render window we have created.
-void Cleanup(int errorCode, bool bExit)
-{
-	if (g_iGLUTWindowHandle != 0)
-	{
+void Cleanup(int errorCode, bool bExit){
+
+	if (g_iGLUTWindowHandle != 0){
 		glutDestroyWindow(g_iGLUTWindowHandle);
 		g_iGLUTWindowHandle = 0;
 	}
 
-	if (bExit)
-	{
+	if (bExit){
 		exit(errorCode);
 	}
 }
 
-void ReshapeGL(int w, int h)
-{
+void ReshapeGL(int w, int h){
+
 	std::cout << "ReshapGL( " << w << ", " << h << " );" << std::endl;
 
-	if (h == 0)                                        // Prevent a divide-by-zero error
-	{
+	if (h == 0){                                    // Prevent a divide-by-zero error
 		h = 1;                                      // Making Height Equal One
 	}
 
@@ -267,8 +187,8 @@ void ReshapeGL(int w, int h)
 }
 
 // Setup the OpenGL and GLUt cotnext
-void InitGL(int argc, char* argv[])
-{
+void InitGL(int argc, char* argv[]){
+
 	std::cout << "Initialise OpenGL..." << std::endl;
 
 	glutInit(&argc, argv);
@@ -300,8 +220,8 @@ void InitGL(int argc, char* argv[])
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+
 	// Capture the previous time to calculate the delta time on the next frame
 	g_PreviousTicks = std::clock();
 
@@ -310,8 +230,8 @@ int main(int argc, char* argv[])
 }
 
 // Primitive functions
-void DrawTriangle(float2 p1, float2 p2, float2 p3)
-{
+void DrawTriangle(float2 p1, float2 p2, float2 p3){
+
 	glBegin(GL_TRIANGLES);
 	glVertex2f(p1.x, p1.y);
 	glVertex2f(p2.x, p2.y);
@@ -319,8 +239,8 @@ void DrawTriangle(float2 p1, float2 p2, float2 p3)
 	glEnd();
 }
 
-void DrawRectangle(float width, float height)
-{
+void DrawRectangle(float width, float height){
+
 	const float w = width / 2.0f;
 	const float h = height / 2.0f;
 
@@ -333,8 +253,8 @@ void DrawRectangle(float width, float height)
 
 }
 
-void DrawCircle(float radius, int numSides /* = 8 */)
-{
+void DrawCircle(float radius, int numSides /* = 8 */){
+
 	const float step = M_PI / numSides;
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(0.0f, 0.0f);
@@ -347,8 +267,8 @@ void DrawCircle(float radius, int numSides /* = 8 */)
 }
 
 // Draw functions
-void RenderScene1()
-{
+void RenderScene1(){
+
 	glMatrixMode(GL_MODELVIEW);                                           // Switch to modelview matrix mode
 	glLoadIdentity();                                                       // Load the identity matrix
 
@@ -365,8 +285,8 @@ void RenderScene1()
 	DrawCircle(1.0f, 16);
 }
 
-void RenderScene2()
-{
+void RenderScene2(){
+
 	glMatrixMode(GL_MODELVIEW);                                           // Switch to modelview matrix mode
 	glLoadIdentity();                                                       // Load the identity matrix
 
@@ -408,8 +328,8 @@ void RenderScene2()
 	glBegin(GL_TRIANGLE_FAN);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glVertex2f(0.0f, 0.0f);
-	for (float angle = 0.0f; angle < (2.0f * M_PI); angle += step)
-	{
+	for (float angle = 0.0f; angle < (2.0f * M_PI); angle += step){
+
 		float fSin = sinf(angle);
 		float fCos = cosf(angle);
 
@@ -421,8 +341,8 @@ void RenderScene2()
 	glEnd();
 }
 
-void RenderScene3()
-{
+void RenderScene3(){
+
 	glMatrixMode(GL_MODELVIEW);                                           // Switch to modelview matrix mode
 	glLoadIdentity();                                                       // Load the identity matrix
 
@@ -471,8 +391,8 @@ void RenderScene3()
 	glBegin(GL_TRIANGLE_FAN);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glVertex2f(0.0f, 0.0f);
-	for (float angle = 0.0f; angle < (2.0f * M_PI); angle += step)
-	{
+	for (float angle = 0.0f; angle < (2.0f * M_PI); angle += step){
+
 		float fSin = sinf(angle);
 		float fCos = cosf(angle);
 
@@ -485,8 +405,8 @@ void RenderScene3()
 	glPopMatrix();
 }
 
-void RenderScene4()
-{
+void RenderScene4(){
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
