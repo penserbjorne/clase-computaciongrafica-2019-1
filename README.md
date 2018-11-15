@@ -13,6 +13,7 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
     - [ ] Spot
     - [ ] Point
   - [ ] (10%) Modelos: Los modelos geométricos que se debe implementar son:
+    - [x] Cubos
     - [ ] Cilindros
     - [ ] Esferas
     - [ ] Prismas
@@ -39,15 +40,15 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 ## Recursos consultados
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
 
+- [Using OpenGL Vertex Buffer Objects by Jeremiah van Oosten.](https://www.3dgep.com/using-opengl-vertex-buffer-objects/)
+
 ## Posibles recursos para consultar
 
 ### OpenGL
 
-- [Rendering Primitives with OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/rendering-primitives-with-opengl/)
 - [Normal Mapping with Cg and OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/normal-mapping-with-cg-and-opengl/)
 - [Texturing and Lighting in OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/texturing-and-lighting-in-opengl/)
 - [Loading and Animating MD5 Models with OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/loading-and-animating-md5-models-with-opengl/)
-- [Using OpenGL Vertex Buffer Objects by Jeremiah van Oosten.](https://www.3dgep.com/using-opengl-vertex-buffer-objects/)
 
 #### GLSL y otras cosas ;@
 

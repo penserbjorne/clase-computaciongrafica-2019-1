@@ -1,5 +1,9 @@
 #pragma once
 
+// GLEW to use GL types like GLuint
+#include <GL/glew.h>
+
+
 // Struct to define vector type objects for 2D and 3D space
 struct float2{
 	float2(float _x = 0.0f, float _y = 0.0f) : x(_x), y(_y) {}
@@ -14,6 +18,13 @@ struct float3{
 	float x;
 	float y;
 	float z;
+};
+
+// Vertex with a color for the primitives to use with VBO
+struct VertexXYZColor
+{
+	float3 m_Pos;
+	float3 m_Color;
 };
 
 struct myMaterial {
@@ -133,6 +144,40 @@ private:
 	float _height;
 	int _sides;
 	float _scale;
+};
+
+class myCube : public my3dObjectBase{
+public:
+	myCube();
+	~myCube();
+	bool draw();
+
+private:
+	// Define the 8 vertices of a unit cube
+	VertexXYZColor _g_Vertices[8] = {
+		{ float3(1,  1,  1), float3(1, 1, 1) }, // 0
+		{ float3(-1,  1,  1), float3(0, 1, 1) }, // 1
+		{ float3(-1, -1,  1), float3(0, 0, 1) }, // 2
+		{ float3(1, -1,  1), float3(1, 0, 1) }, // 3
+		{ float3(1, -1, -1), float3(1, 0, 0) }, // 4
+		{ float3(-1, -1, -1), float3(0, 0, 0) }, // 5
+		{ float3(-1,  1, -1), float3(0, 1, 0) }, // 6
+		{ float3(1,  1, -1), float3(1, 1, 0) }, // 7
+	};
+
+	// Define the vertex indices for the cube.
+	GLuint _g_Indices[24] = {
+		0, 1, 2, 3,                 // Front face
+		7, 4, 5, 6,                 // Back face
+		6, 5, 2, 1,                 // Left face
+		7, 0, 3, 4,                 // Right face
+		7, 6, 1, 0,                 // Top face
+		3, 2, 5, 4,                 // Bottom face
+	};
+
+	// IDs for the buffers
+	GLuint _g_uiVerticesVBO = 0;
+	GLuint _g_uiIndicesVBO = 0;
 };
 
 class myCylinder : public my3dObjectBase{

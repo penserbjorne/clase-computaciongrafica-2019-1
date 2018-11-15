@@ -1,4 +1,8 @@
 #include "myObjectTypes.h"
+#include <cstddef> // To use NULL
+
+#define MEMBER_OFFSET(s,m) ((char *)NULL + (offsetof(s,m)))
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 // myBaseObject class definitions
 
@@ -130,6 +134,55 @@ bool my3dObjectBase::setScale(float scale){
 
 float my3dObjectBase::getScale(){
 	return this->_scale;
+}
+
+// myCube class definitions
+
+myCube::myCube(){
+	
+}
+
+myCube::~myCube(){
+}
+
+bool myCube::draw(){
+	// Create VBO's
+	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
+
+	// Copy the vertex data to the VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(this->_g_Vertices), this->_g_Vertices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+	// Copy the index data to the VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_Indices), this->_g_Indices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+
+	// We need to enable the client stats for the vertex attributes we want 
+	// to render even if we are not using client-side vertex arrays.
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	// Bind the vertices's VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
+	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+
+	// Bind the indices's VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+	// Unbind buffers so client-side vertex arrays still work.
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+	// Disable the client side arrays again.
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	return true;
 }
 
 // myCylinder class definitions

@@ -5,6 +5,7 @@
 #include <ctime>
 
 // Standar GL libraries
+#include <GL/glew.h>
 #include <GL/glut.h>
 
 // My unhappy Code :D
@@ -25,6 +26,9 @@ float g_fRotate3 = 0.0f;
 std::clock_t g_PreviousTicks;
 std::clock_t g_CurrentTicks;
 
+// Test
+myCube* unCubo;
+
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
 void DisplayGL();	//	Render function for GLUT
@@ -35,27 +39,18 @@ void MotionGL(int x, int y);	//	Invoked when the mouse moves within the window w
 void PassiveMotionGL(int x, int y);		//	Invoked when the mouse moves within the window while no one button is pressed.
 void ReshapeGL(int w, int h);
 
-// To draw some primitives
-void DrawRectangle(float width, float height);
-void DrawCircle(float radius, int numSides = 8);
-void DrawTriangle(float2 p1, float2 p2, float2 p3);
-
 // Clean up resources
 void Cleanup(int exitCode, bool bExit = true);
 
-// Render functions from the different scenes
-// Render a simple scene with 2D primitives
-void RenderScene1();
-// Render a slightly more complex scene using different colors
-void RenderScene2();
-// Render a scene with animated transformations
-void RenderScene3();
 // Render a scene with 3D objects that perform rotations on all 3 axis.
-void RenderScene4();
+void RenderScene();
 
 // Drawer!
 void DisplayGL(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
+	RenderScene();
 
 	// Render Stuff
 	glutSwapBuffers();
@@ -75,13 +70,13 @@ void IdleGL(){
 	const float fRotationRate = 50.0f;
 
 	// Update our rotation parameters
-	g_fRotate1 += (fRotationRate * fDeltaTime);
+	g_fRotate1 += ((fRotationRate + 10) * fDeltaTime);
 	g_fRotate1 = fmodf(g_fRotate1, 360.0f);
 
-	g_fRotate2 += (fRotationRate * fDeltaTime);
+	g_fRotate2 += ((fRotationRate + 5) * fDeltaTime);
 	g_fRotate2 = fmodf(g_fRotate2, 360.0f);
 
-	g_fRotate3 += (fRotationRate * fDeltaTime);
+	g_fRotate3 += ((fRotationRate + 20) * fDeltaTime);
 	g_fRotate3 = fmodf(g_fRotate3, 360.0f);
 
 	glutPostRedisplay();
@@ -203,6 +198,19 @@ void InitGL(int argc, char* argv[]){
 
 	g_iGLUTWindowHandle = glutCreateWindow("OpenGL");
 
+	// Init GLEW
+	if (glewInit() != GLEW_OK){
+		std::cerr << "Failed to initialize GLEW." << std::endl;
+		exit(-1);
+	}
+
+	// is VBO supported?
+	if (!glewIsSupported("GL_VERSION_2_0") && !glewIsSupported("GL_ARB_vertex_buffer_object"))
+	{
+		std::cerr << "ARB_vertex_buffer_object not supported!" << std::endl;
+		exit(-2);
+	}
+	
 	// Register GLUT callbacks
 	glutDisplayFunc(DisplayGL);
 	glutIdleFunc(IdleGL);
@@ -218,6 +226,8 @@ void InitGL(int argc, char* argv[]){
 
 	glShadeModel(GL_SMOOTH);
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
+
+	unCubo = new myCube();
 }
 
 int main(int argc, char* argv[]){
@@ -229,183 +239,7 @@ int main(int argc, char* argv[]){
 	glutMainLoop();
 }
 
-// Primitive functions
-void DrawTriangle(float2 p1, float2 p2, float2 p3){
-
-	glBegin(GL_TRIANGLES);
-	glVertex2f(p1.x, p1.y);
-	glVertex2f(p2.x, p2.y);
-	glVertex2f(p3.x, p3.y);
-	glEnd();
-}
-
-void DrawRectangle(float width, float height){
-
-	const float w = width / 2.0f;
-	const float h = height / 2.0f;
-
-	glBegin(GL_QUADS);
-	glVertex2f(-w, h);   // Top-Left
-	glVertex2f(w, h);   // Top-Right
-	glVertex2f(w, -h);   // Bottom-Right
-	glVertex2f(-w, -h);   // Bottom-Left
-	glEnd();
-
-}
-
-void DrawCircle(float radius, int numSides /* = 8 */){
-
-	const float step = M_PI / numSides;
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(0.0f, 0.0f);
-	for (float angle = 0.0f; angle < (2.0f * M_PI); angle += step)
-	{
-		glVertex2f(radius * sinf(angle), radius * cosf(angle));
-	}
-	glVertex2f(0.0f, radius); // One more vertex to close the circle
-	glEnd();
-}
-
-// Draw functions
-void RenderScene1(){
-
-	glMatrixMode(GL_MODELVIEW);                                           // Switch to modelview matrix mode
-	glLoadIdentity();                                                       // Load the identity matrix
-
-	glTranslatef(-1.5f, 1.0f, -6.0f);                                     // Translate our view matrix back and a bit to the left.
-	glColor3f(1.0f, 0.0f, 0.0f);                                          // Set Color to red
-	DrawTriangle(float2(0.0f, 1.0f), float2(-1.0f, -1.0f), float2(1.0f, -1.0f));
-
-	glTranslatef(3.0f, 0.0f, 0.0f);                                       // Shift view 3 units to the right
-	glColor3f(0.0f, 0.0f, 1.0f);                                          // Set Color to blue
-	DrawRectangle(2.0f, 2.0f);
-
-	glTranslatef(-1.5f, -3.0f, 0.0f);                                     // Back to center and lower screen
-	glColor3f(1.0f, 1.0f, 0.0f);                                          // Set color to yellow
-	DrawCircle(1.0f, 16);
-}
-
-void RenderScene2(){
-
-	glMatrixMode(GL_MODELVIEW);                                           // Switch to modelview matrix mode
-	glLoadIdentity();                                                       // Load the identity matrix
-
-	glTranslatef(-1.5f, 1.0f, -6.0f);                                     // Translate back and to the left
-	// Draw a triangle with different colors on each vertex
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex2f(0.0f, 1.0f);                                           // Top-Center
-
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex2f(-1.0f, -1.0f);                                         // Bottom-Left
-
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex2f(1.0f, -1.0f);                                          // Bottom-Right
-	glEnd();
-
-	glTranslatef(3.0f, 0.0f, 0.0f);                                       // Translate right
-	// Draw a rectangle with different colors on each vertex
-	glBegin(GL_QUADS);
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex2f(-1.0f, 1.0f);                                          // Top-Left
-
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex2f(1.0f, 1.0f);                                           // Top-Right
-
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex2f(1.0f, -1.0f);                                          // Bottom-Right
-
-	glColor3f(1.0f, 1.0f, 1.0f);                                      // White
-	glVertex2f(-1.0f, -1.0f);                                         // Bottom-Left
-	glEnd();
-
-	glTranslatef(-1.5f, -3.0f, 0.0f);                                     // Back to center and lower screen
-
-	// Draw a circle with blended red/blue vertices.
-	const float step = M_PI / 16;
-	const float radius = 1.0f;
-
-	glBegin(GL_TRIANGLE_FAN);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glVertex2f(0.0f, 0.0f);
-	for (float angle = 0.0f; angle < (2.0f * M_PI); angle += step){
-
-		float fSin = sinf(angle);
-		float fCos = cosf(angle);
-
-		glColor3f((fCos + 1.0f) * 0.5f, (fSin + 1.0f) * 0.5f, 0.0f);
-		glVertex2f(radius * fSin, radius * fCos);
-	}
-	glColor3f(1.0f, 0.5f, 0.0f);
-	glVertex2f(0.0f, radius); // One more vertex to close the circle
-	glEnd();
-}
-
-void RenderScene3(){
-
-	glMatrixMode(GL_MODELVIEW);                                           // Switch to modelview matrix mode
-	glLoadIdentity();                                                       // Load the identity matrix
-
-	glTranslatef(-1.5f, 1.0f, -6.0f);                                     // Translate back and to the left
-	glPushMatrix();                                                         // Push the current transformation onto the matrix stack
-	glRotatef(g_fRotate1, 0.0f, 0.0f, 1.0f);
-	// Draw a triangle with different colors on each vertex
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex2f(0.0f, 1.0f);                                           // Top-Center
-
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex2f(-1.0f, -1.0f);                                         // Bottom-Left
-
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex2f(1.0f, -1.0f);                                          // Bottom-Right
-	glEnd();
-	glPopMatrix();
-
-	glTranslatef(3.0f, 0.0f, 0.0f);                                       // Translate right
-	glPushMatrix();
-	glRotatef(g_fRotate2, 0.0f, 0.0f, 1.0f);
-	// Draw a rectangle with different colors on each vertex
-	glBegin(GL_QUADS);
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex2f(-1.0f, 1.0f);                                          // Top-Left
-
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex2f(1.0f, 1.0f);                                           // Top-Right
-
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex2f(1.0f, -1.0f);                                          // Bottom-Right
-
-	glColor3f(1.0f, 1.0f, 1.0f);                                      // White
-	glVertex2f(-1.0f, -1.0f);                                         // Bottom-Left
-	glEnd();
-	glPopMatrix();
-
-	glTranslatef(-1.5f, -3.0f, 0.0f);                                     // Back to center and lower screen
-	glPushMatrix();
-	glRotatef(g_fRotate3, 0.0f, 0.0f, 1.0f);
-	// Draw a circle with blended red/blue vertecies
-	const float step = M_PI / 16;
-	const float radius = 1.0f;
-
-	glBegin(GL_TRIANGLE_FAN);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glVertex2f(0.0f, 0.0f);
-	for (float angle = 0.0f; angle < (2.0f * M_PI); angle += step){
-
-		float fSin = sinf(angle);
-		float fCos = cosf(angle);
-
-		glColor3f((fCos + 1.0f) * 0.5f, (fSin + 1.0f) * 0.5f, 0.0f);
-		glVertex2f(radius * fSin, radius * fCos);
-	}
-	glColor3f(1.0f, 0.5f, 0.0f);
-	glVertex2f(0.0f, radius); // One more vertex to close the circle
-	glEnd();
-	glPopMatrix();
-}
-
-void RenderScene4(){
+void RenderScene(){
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -413,98 +247,15 @@ void RenderScene4(){
 	glEnable(GL_DEPTH_TEST);
 
 	glTranslatef(-1.5f, 1.0f, -6.0f);                                     // Translate back and to the left
-
 	glPushMatrix();                                                         // Push the current modelview matrix on the matrix stack
 	glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);                               // Rotate on all 3 axis
-	glBegin(GL_TRIANGLES);                                                // Draw a pyramid
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex3f(0.0f, 1.0f, 0.0f);                                     // Top of front face
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex3f(-1.0f, -1.0f, 1.0f);                                   // Left of front face
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex3f(1.0f, -1.0f, 1.0f);                                    // Right of front face
-
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex3f(0.0f, 1.0f, 0.0f);                                     // Top of right face
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex3f(1.0f, -1.0f, 1.0f);                                    // Left of right face
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex3f(1.0f, -1.0f, -1.0f);                                   // Right of right face
-
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex3f(0.0f, 1.0f, 0.0f);                                     // Top of back face
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex3f(1.0f, -1.0f, -1.0f);                                   // Left of back face
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex3f(-1.0f, -1.0f, -1.0f);                                  // Right of back face
-
-	glColor3f(1.0f, 0.0f, 0.0f);                                      // Red
-	glVertex3f(0.0f, 1.0f, 0.0f);                                     // Top of left face
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex3f(-1.0f, -1.0f, -1.0f);                                  // Left of left face
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex3f(-1.0f, -1.0f, 1.0f);                                   // Right of left face
-	glEnd();
-
-	// Render a quad for the bottom of our pyramid
-	glBegin(GL_QUADS);
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex3f(-1.0f, -1.0f, 1.0f);                                   // Left/right of front/left face
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex3f(1.0f, -1.0f, 1.0f);                                    // Right/left of front/right face
-	glColor3f(0.0f, 1.0f, 0.0f);                                      // Green
-	glVertex3f(1.0f, -1.0f, -1.0f);                                   // Right/left of right/back face
-	glColor3f(0.0f, 0.0f, 1.0f);                                      // Blue
-	glVertex3f(-1.0f, -1.0f, -1.0f);                                  // Left/right of right/back face
-	glEnd();
+	unCubo->draw();
 	glPopMatrix();
 
 	glTranslatef(3.0f, 0.0f, 0.0f);                                        // Translate right
-	glPushMatrix();                                                         // Push the current modelview matrix on the matrix stack
-	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);                              // Rotate the primitive on all 3 axis
-	glBegin(GL_QUADS);
-	// Top face
-	glColor3f(0.0f, 1.0f, 0.0f);                                   // Green
-	glVertex3f(1.0f, 1.0f, -1.0f);                                   // Top-right of top face
-	glVertex3f(-1.0f, 1.0f, -1.0f);                                   // Top-left of top face
-	glVertex3f(-1.0f, 1.0f, 1.0f);                                   // Bottom-left of top face
-	glVertex3f(1.0f, 1.0f, 1.0f);                                   // Bottom-right of top face
-
-	// Bottom face
-	glColor3f(1.0f, 0.5f, 0.0f);                                  // Orange
-	glVertex3f(1.0f, -1.0f, -1.0f);                                  // Top-right of bottom face
-	glVertex3f(-1.0f, -1.0f, -1.0f);                                  // Top-left of bottom face
-	glVertex3f(-1.0f, -1.0f, 1.0f);                                  // Bottom-left of bottom face
-	glVertex3f(1.0f, -1.0f, 1.0f);                                  // Bottom-right of bottom face
-
-	// Front face
-	glColor3f(1.0f, 0.0f, 0.0f);                                  // Red
-	glVertex3f(1.0f, 1.0f, 1.0f);                                  // Top-Right of front face
-	glVertex3f(-1.0f, 1.0f, 1.0f);                                  // Top-left of front face
-	glVertex3f(-1.0f, -1.0f, 1.0f);                                  // Bottom-left of front face
-	glVertex3f(1.0f, -1.0f, 1.0f);                                  // Bottom-right of front face
-
-	// Back face
-	glColor3f(1.0f, 1.0f, 0.0f);                                 // Yellow
-	glVertex3f(1.0f, -1.0f, -1.0f);                                 // Bottom-Left of back face
-	glVertex3f(-1.0f, -1.0f, -1.0f);                                 // Bottom-Right of back face
-	glVertex3f(-1.0f, 1.0f, -1.0f);                                 // Top-Right of back face
-	glVertex3f(1.0f, 1.0f, -1.0f);                                 // Top-Left of back face
-
-	// Left face
-	glColor3f(0.0f, 0.0f, 1.0f);                                   // Blue
-	glVertex3f(-1.0f, 1.0f, 1.0f);                                   // Top-Right of left face
-	glVertex3f(-1.0f, 1.0f, -1.0f);                                   // Top-Left of left face
-	glVertex3f(-1.0f, -1.0f, -1.0f);                                   // Bottom-Left of left face
-	glVertex3f(-1.0f, -1.0f, 1.0f);                                   // Bottom-Right of left face
-
-	// Right face
-	glColor3f(1.0f, 0.0f, 1.0f);                                   // Violet
-	glVertex3f(1.0f, 1.0f, 1.0f);                                   // Top-Right of left face
-	glVertex3f(1.0f, 1.0f, -1.0f);                                   // Top-Left of left face
-	glVertex3f(1.0f, -1.0f, -1.0f);                                   // Bottom-Left of left face
-	glVertex3f(1.0f, -1.0f, 1.0f);                                   // Bottom-Right of left face
-	glEnd();
+	glPushMatrix();
+	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+	unCubo->draw();
 	glPopMatrix();
 
 	glTranslatef(-1.5f, -3.0f, 0.0f);                                     // Back to center and lower screen
