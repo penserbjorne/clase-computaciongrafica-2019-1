@@ -8,7 +8,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
-// My unhappy Code :D
+// My unhappy Code >;v
 #include "myObjectTypes.h"
 
 // GL variables to use with GLUT
@@ -25,6 +25,7 @@ float g_fRotate3 = 0.0f;
 // To store the number os ticks between frames
 std::clock_t g_PreviousTicks;
 std::clock_t g_CurrentTicks;
+float deltaTicks, fDeltaTime;
 
 // Test
 myCube* unCubo;
@@ -34,6 +35,7 @@ myPrism* unPrisma3;
 myPrism* unPrisma5;
 myPrism* unPrisma7;
 myPrism* unPrisma9;
+void RenderScene();
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -44,12 +46,7 @@ void MouseGL(int button, int state, int x, int y);
 void MotionGL(int x, int y);	//	Invoked when the mouse moves within the window while one or more mouse buttons are pressed.
 void PassiveMotionGL(int x, int y);		//	Invoked when the mouse moves within the window while no one button is pressed.
 void ReshapeGL(int w, int h);
-
-// Clean up resources
 void Cleanup(int exitCode, bool bExit = true);
-
-// Render a scene with 3D objects that perform rotations on all 3 axis.
-void RenderScene();
 
 // Drawer!
 void DisplayGL(){
@@ -60,17 +57,16 @@ void DisplayGL(){
 
 	// Render Stuff
 	glutSwapBuffers();
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 // To update the logic of our demo :D
 void IdleGL(){
 	// Update our simulation
 	g_CurrentTicks = std::clock();
-	float deltaTicks = (g_CurrentTicks - g_PreviousTicks);
+	deltaTicks = (g_CurrentTicks - g_PreviousTicks);
 	g_PreviousTicks = g_CurrentTicks;
-
-	float fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC;
+	fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC;
 
 	// Rate of rotation in (degrees) per second
 	const float fRotationRate = 50.0f;
@@ -138,7 +134,7 @@ void KeyboardGL(unsigned char c, int x, int y){
 		break;
 	}
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 void MouseGL(int button, int state, int x, int y){
@@ -258,55 +254,54 @@ void RenderScene(){
 
 	glEnable(GL_DEPTH_TEST);
 
-	glTranslatef(-1.5f, 4.5f, -12.0f);                                     // Translate back and to the left
-	glPushMatrix();                                                         // Push the current modelview matrix on the matrix stack
-	glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);                               // Rotate on all 3 axis
-	unCubo->draw();
+	glTranslatef(-1.5f, 4.5f, -12.0f);
+	glPushMatrix();
+		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+		unCubo->draw();
 	glPopMatrix();
 
-	glTranslatef(3.0f, 0.0f, 0.0f);                                        // Translate right
+	
+	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
-	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
-	unCilindro->draw();
+		glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+		unCilindro->draw();
 	glPopMatrix();
 
-	glTranslatef(-3.0f, -3.0f, 0.0f);                                     // Back to center and lower screen
+	
+	glTranslatef(-3.0f, -3.0f, 0.0f);
 	glPushMatrix();
-	glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
-	unaEsfera->draw();
-	/*glScalef(1.01f, 1.01f, 1.01f);
-	glColor3f(1.0f, 0.0f, 0.0f);                                          // Red
-	glutWireSphere(1.0f, 20, 20);                                         // Use GLUT to draw a wireframe sphere
-	*/
+		glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
+		unaEsfera->draw();
+	glPopMatrix();
+	
+	glTranslatef(3.0f, 0.0f, 0.0f);
+	glPushMatrix();
+		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+		unaEsfera->draw();
 	glPopMatrix();
 
-	glTranslatef(3.0f, 0.0f, 0.0f);                                     // Back to center and lower screen
+	glTranslatef(-3.0f, -3.0f, 0.0f);
 	glPushMatrix();
-	glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-	unaEsfera->draw();
+		glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+		unPrisma3->draw();
 	glPopMatrix();
 
-	glTranslatef(-3.0f, -3.0f, 0.0f);                                     // Back to center and lower screen
+	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
-	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
-	unPrisma3->draw();
+		glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
+		unPrisma5->draw();
 	glPopMatrix();
 
-	glTranslatef(3.0f, 0.0f, 0.0f);                                     // Back to center and lower screen
+	glTranslatef(-3.0f, -3.0f, 0.0f);
 	glPushMatrix();
-	glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
-	unPrisma5->draw();
+		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+		unPrisma7->draw();
 	glPopMatrix();
 
-	glTranslatef(-3.0f, -3.0f, 0.0f);                                     // Back to center and lower screen
+	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
-	glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-	unPrisma7->draw();
+		glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+		unPrisma9->draw();
 	glPopMatrix();
-
-	glTranslatef(3.0f, 0.0f, 0.0f);                                     // Back to center and lower screen
-	glPushMatrix();
-	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
-	unPrisma9->draw();
-	glPopMatrix();
+	
 }

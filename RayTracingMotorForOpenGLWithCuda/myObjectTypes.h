@@ -3,6 +3,24 @@
 // GLEW to use GL types like GLuint
 #include <GL/glew.h>
 
+#define _USE_MATH_DEFINES
+#include <iostream>
+#include <cstddef> // To use NULL
+#include <cmath>
+
+#define MEMBER_OFFSET(s,m) ((char *)NULL + (offsetof(s,m)))
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+constexpr auto SIZEVERTEXCUBE = 8;
+constexpr auto SIZEINDEXCUBE = 24;
+
+constexpr auto SIZEVERTEXCYLINDER = 128;
+constexpr auto SIZEVERTEXCYLINDER_TOP_BOTTOM = 64;
+
+constexpr auto SIZEVERTEXSPHERE = 882;
+
+constexpr auto SIZEVERTEXPRISM = 722;
+constexpr auto SIZEVERTEXPRISM_TOP_BOTTOM = 360;
 
 // Struct to define vector type objects for 2D and 3D space
 struct float2{
@@ -47,6 +65,7 @@ enum EmyObjectType {
 	mot3dBase,
 	motSpotlight,
 	motPointlight,
+	motCube,
 	motCylinder,
 	motSphere,
 	motPrism,
@@ -118,7 +137,7 @@ public:
 	bool setTransparency(GLfloat transparency);
 	GLfloat getTransparency();
 
-	bool setRaidus(GLfloat radius);
+	bool setRadius(GLfloat radius);
 	GLfloat getRadius();
 
 	bool setWidth(GLfloat width);
@@ -144,6 +163,13 @@ protected:
 	GLfloat _height;
 	GLint _sides;
 	GLfloat _scale;
+
+	// IDs for the buffers
+	GLuint _g_uiVerticesVBO = 0;
+	GLuint _g_uiIndicesVBO = 0;
+
+	GLsizei _sizeVertex;
+	GLsizei _sizeIndex;
 };
 
 class myCube : public my3dObjectBase{
@@ -154,7 +180,7 @@ public:
 
 private:
 	// Define the 8 vertices of a unit cube
-	VertexXYZColor _g_Vertices[8] = {
+	VertexXYZColor _g_Vertices[SIZEVERTEXCUBE] = {
 		{ float3(1,  1,  1), float3(1, 1, 1) }, // 0
 		{ float3(-1,  1,  1), float3(0, 1, 1) }, // 1
 		{ float3(-1, -1,  1), float3(0, 0, 1) }, // 2
@@ -166,7 +192,7 @@ private:
 	};
 
 	// Define the vertex indices for the cube.
-	GLuint _g_Indices[24] = {
+	GLuint _g_Indices[SIZEINDEXCUBE] = {
 		0, 1, 2, 3,                 // Front face
 		7, 4, 5, 6,                 // Back face
 		6, 5, 2, 1,                 // Left face
@@ -174,10 +200,6 @@ private:
 		7, 6, 1, 0,                 // Top face
 		3, 2, 5, 4,                 // Bottom face
 	};
-
-	// IDs for the buffers
-	GLuint _g_uiVerticesVBO = 0;
-	GLuint _g_uiIndicesVBO = 0;
 };
 
 class myCylinder : public my3dObjectBase{
@@ -190,16 +212,16 @@ public:
 	bool draw();
 
 protected:
-	VertexXYZColor _g_Vertices[128];
-	GLuint _g_Indices[128];
-	GLuint _g_IndicesTapa[64];
-	GLuint _g_IndicesFondo[64];
+	VertexXYZColor _g_Vertices[SIZEVERTEXCYLINDER];
+	GLuint _g_Indices[SIZEVERTEXCYLINDER];
+	GLuint _g_IndicesT[SIZEVERTEXCYLINDER_TOP_BOTTOM];
+	GLuint _g_IndicesB[SIZEVERTEXCYLINDER_TOP_BOTTOM];
 
 	// IDs for the buffers
-	GLuint _g_uiVerticesVBO = 0;
-	GLuint _g_uiIndicesVBO = 0;
-	GLuint _g_uiIndicesVBOTapa = 0;
-	GLuint _g_uiIndicesVBOFondo = 0;
+	GLuint _g_uiIndicesVBO_Top = 0;	// Top - Tapa
+	GLuint _g_uiIndicesVBO_Bottom = 0;	// Bottom - Base
+
+	GLsizei _sizeIndex_Top_Bottom;
 };
 
 class mySphere : public my3dObjectBase{
@@ -214,12 +236,8 @@ private:
 	GLfloat _lats;
 	GLfloat _longs;
 
-	VertexXYZColor _g_Vertices[882];
-	GLuint _g_Indices[882];
-
-	// IDs for the buffers
-	GLuint _g_uiVerticesVBO = 0;
-	GLuint _g_uiIndicesVBO = 0;
+	VertexXYZColor _g_Vertices[SIZEVERTEXSPHERE];
+	GLuint _g_Indices[SIZEVERTEXSPHERE];
 };
 
 class myPrism : public my3dObjectBase{
@@ -230,19 +248,16 @@ public:
 	bool draw();
 
 private:
-	VertexXYZColor _g_Vertices[722];
-	GLuint _g_Indices[722];
-	GLuint _g_IndicesTapa[360];
-	GLuint _g_IndicesFondo[360];
+	VertexXYZColor _g_Vertices[SIZEVERTEXPRISM];
+	GLuint _g_Indices[SIZEVERTEXPRISM];
+	GLuint _g_IndicesT[SIZEVERTEXPRISM_TOP_BOTTOM];
+	GLuint _g_IndicesB[SIZEVERTEXPRISM_TOP_BOTTOM];
 
 	// IDs for the buffers
-	GLuint _g_uiVerticesVBO = 0;
-	GLuint _g_uiIndicesVBO = 0;
-	GLuint _g_uiIndicesVBOTapa = 0;
-	GLuint _g_uiIndicesVBOFondo = 0;
+	GLuint _g_uiIndicesVBO_Top = 0;
+	GLuint _g_uiIndicesVBO_Bottom = 0;
 
-	int _size1;
-	int _size2;
+	GLsizei _sizeIndex_Top_Bottom;
 };
 
 class myOBJModel : public my3dObjectBase{
