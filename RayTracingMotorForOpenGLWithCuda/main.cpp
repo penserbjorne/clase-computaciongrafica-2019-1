@@ -35,6 +35,7 @@ myPrism* unPrisma3;
 myPrism* unPrisma5;
 myPrism* unPrisma7;
 myPrism* unPrisma9;
+myPlane* unPlano;
 void RenderScene();
 
 // OpenGL callback functions
@@ -236,6 +237,7 @@ void InitGL(int argc, char* argv[]){
 	unPrisma5 = new myPrism(1.0f, 1.0f, 5);
 	unPrisma7 = new myPrism(1.0f, 1.0f, 7);
 	unPrisma9 = new myPrism(1.0f, 1.0f, 9);
+	unPlano = new myPlane();
 }
 
 int main(int argc, char* argv[]){
@@ -277,7 +279,7 @@ void RenderScene(){
 	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-		unaEsfera->draw();
+		unPlano->draw();
 	glPopMatrix();
 
 	glTranslatef(-3.0f, -3.0f, 0.0f);

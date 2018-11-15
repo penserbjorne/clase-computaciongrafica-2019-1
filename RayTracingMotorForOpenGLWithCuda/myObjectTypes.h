@@ -275,9 +275,10 @@ class myPlane : public my3dObjectBase{
 public:
 	myPlane();
 	~myPlane();
+	bool draw();
 
 private:
-
+	myCube _cubeBase;
 };
 
 class myCamera : public my3dObjectBase

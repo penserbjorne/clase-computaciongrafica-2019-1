@@ -548,6 +548,14 @@ myPlane::myPlane(){
 myPlane::~myPlane(){
 }
 
+bool myPlane::draw(){
+	glPushMatrix();
+		glScalef(1.0f, 0.05f, 1.0f);	
+		this->_cubeBase.draw();
+	glPopMatrix();
+	return true;
+}
+
 // myCamera class definitions
 
 myCamera::myCamera(){

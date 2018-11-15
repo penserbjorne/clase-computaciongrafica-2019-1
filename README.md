@@ -18,7 +18,7 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
     - [x] Esferas
     - [x] Prismas
     - [ ] Modelos en formato OBJ
-    - [ ] Planos
+    - [x] Planos
   - [ ] (10%) Se podrá colocar una textura a cada modelo, si el objeto es reflectivo o refractivo.
   - [ ] (10%) Múltiples cámaras.
     - [ ] Manejar la cámara en primera persona y la cámara orbital (Arcball).
