@@ -229,7 +229,7 @@ void InitGL(int argc, char* argv[]){
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
 
 	unCubo = new myCube();
-	unCilindro = new myCylinder(0.5f, 1.0f);
+	unCilindro = new myCylinder(1.0f, 1.0f);
 }
 
 int main(int argc, char* argv[]){

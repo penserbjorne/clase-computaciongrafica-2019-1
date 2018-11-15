@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include "myObjectTypes.h"
+#include <iostream>
 #include <cstddef> // To use NULL
 #include <cmath>
 
@@ -193,38 +194,111 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_type = EmyObjectType::motCylinder;
 	this->_radius = radius;
 	this->_height = height;
+
+	GLfloat x = 0.0f, y = 0.0f;
+	GLfloat angle = 0.0f, angle_stepsize = 0.1f;
+	int index = 0, index2 = 0;
+
+	while (angle < 2 * M_PI) {
+		x = this->_radius * cos(angle);
+		y = this->_radius * sin(angle);
+
+		this->_g_Indices[index] = index;
+		this->_g_IndicesTapa[index2] = index;
+		this->_g_Vertices[index] = {
+			float3(x, y, this->_height), // Coord
+			float3(x, y, this->_height) // Color
+		};
+		index++;
+
+		this->_g_Indices[index] = index;
+		this->_g_IndicesFondo[index2] = index;
+		this->_g_Vertices[index] = {
+			float3(x, y, 0.0f), // Coord
+			float3(x, y, 0.0f) // Position
+		};
+		index++;
+
+		angle += angle_stepsize;
+		index2++;
+	}
+
+	this->_g_Indices[index] = index;
+	this->_g_IndicesTapa[index2] = index;
+	this->_g_Vertices[index] = {
+		float3(this->_radius, 0.0, this->_height), // Coord
+		float3(this->_radius, 0.0, this->_height) // Position
+	};
+	index++;
+
+	this->_g_Indices[index] = index;
+	this->_g_IndicesFondo[index2] = index;
+	this->_g_Vertices[index] = {
+		float3(this->_radius, 0.0, 0.0), // Coord
+		float3(this->_radius, 0.0, 0.0) // Position
+	};
 }
 
 myCylinder::~myCylinder(){
 }
 
 bool myCylinder::draw(){
-	GLfloat x = 0.0f, y = 0.0f;
-	GLfloat angle = 0.0f, angle_stepsize = 0.1f;
+	// Create VBO's
+	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBOTapa));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBOFondo));
 
-	glBegin(GL_QUAD_STRIP);
-	while (angle < 2 * M_PI) {
-		x = this->_radius * cos(angle);
-		y = this->_radius * sin(angle);
-		glVertex3f(x, y, this->_height);
-		glVertex3f(x, y, 0.0);
-		angle = angle + angle_stepsize;
-	}
-	glVertex3f(this->_radius, 0.0, this->_height);
-	glVertex3f(this->_radius, 0.0, 0.0);
-	glEnd();
+	// Copy the vertex data to the VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(this->_g_Vertices), this->_g_Vertices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 
-	/** Draw the circle on top of cylinder */
-	glBegin(GL_POLYGON);
-	angle = 0.0;
-	while (angle < 2 * M_PI) {
-		x = this->_radius * cos(angle);
-		y = this->_radius * sin(angle);
-		glVertex3f(x, y, this->_height);
-		angle = angle + angle_stepsize;
-	}
-	glVertex3f(this->_radius, 0.0, this->_height);
-	glEnd();
+	// Copy the index data to the VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_Indices), this->_g_Indices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOTapa);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_IndicesTapa), this->_g_IndicesTapa, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 1);
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOFondo);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_IndicesFondo), this->_g_IndicesFondo, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 2);
+
+	// We need to enable the client stats for the vertex attributes we want 
+	// to render even if we are not using client-side vertex arrays.
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	// Bind the vertices's VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
+	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+
+	// Bind the indices's VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glDrawElements(GL_QUAD_STRIP, 128, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOTapa);
+	glDrawElements(GL_POLYGON, 64, GL_UNSIGNED_INT, BUFFER_OFFSET(1));
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOFondo);
+	glDrawElements(GL_POLYGON, 64, GL_UNSIGNED_INT, BUFFER_OFFSET(2));
+
+	// Unbind buffers so client-side vertex arrays still work.
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 1);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 1);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 2);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 2);
+
+	// Disable the client side arrays again.
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+
 	return true;
 }
 

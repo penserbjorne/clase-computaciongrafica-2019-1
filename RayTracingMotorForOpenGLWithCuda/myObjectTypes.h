@@ -188,6 +188,16 @@ public:
 	bool draw();
 
 private:
+	VertexXYZColor _g_Vertices[128];
+	GLuint _g_Indices[128];
+	GLuint _g_IndicesTapa[64];
+	GLuint _g_IndicesFondo[64];
+
+	// IDs for the buffers
+	GLuint _g_uiVerticesVBO = 0;
+	GLuint _g_uiIndicesVBO = 0;
+	GLuint _g_uiIndicesVBOTapa = 0;
+	GLuint _g_uiIndicesVBOFondo = 0;
 };
 
 class mySphere : public my3dObjectBase{
