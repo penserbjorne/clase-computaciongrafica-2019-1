@@ -1,7 +1,7 @@
 // Standar C++ libraries
 #define _USE_MATH_DEFINES
-#include <math.h>
 #include <iostream>
+#include <cmath>
 #include <ctime>
 
 // Standar GL libraries
@@ -28,6 +28,7 @@ std::clock_t g_CurrentTicks;
 
 // Test
 myCube* unCubo;
+myCylinder* unCilindro;
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -228,6 +229,7 @@ void InitGL(int argc, char* argv[]){
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
 
 	unCubo = new myCube();
+	unCilindro = new myCylinder(0.5f, 1.0f);
 }
 
 int main(int argc, char* argv[]){
@@ -255,7 +257,7 @@ void RenderScene(){
 	glTranslatef(3.0f, 0.0f, 0.0f);                                        // Translate right
 	glPushMatrix();
 	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
-	unCubo->draw();
+	unCilindro->draw();
 	glPopMatrix();
 
 	glTranslatef(-1.5f, -3.0f, 0.0f);                                     // Back to center and lower screen

@@ -39,7 +39,6 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 
 ## Recursos consultados
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
-
 - [Using OpenGL Vertex Buffer Objects by Jeremiah van Oosten.](https://www.3dgep.com/using-opengl-vertex-buffer-objects/)
 
 ## Posibles recursos para consultar

@@ -1,5 +1,7 @@
+#define _USE_MATH_DEFINES
 #include "myObjectTypes.h"
 #include <cstddef> // To use NULL
+#include <cmath>
 
 #define MEMBER_OFFSET(s,m) ((char *)NULL + (offsetof(s,m)))
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -17,7 +19,7 @@ EmyObjectType myBaseObject::getObjectType(){
 	return this->_type;
 }
 
-bool myBaseObject::setPosition(float x, float y, float z){
+bool myBaseObject::setPosition(GLfloat x, GLfloat y, GLfloat z){
 	this->_position.x = x;
 	this->_position.y = y;
 	this->_position.z = z;
@@ -87,52 +89,52 @@ bool my3dObjectBase::setTransparency(float transparency){
 	return true;
 }
 
-float my3dObjectBase::getTransparency(){
+GLfloat my3dObjectBase::getTransparency(){
 	return this->_transparency;
 }
 
-bool my3dObjectBase::setRaidus(float radius){
+bool my3dObjectBase::setRaidus(GLfloat radius){
 	this->_radius = radius;
 	return true;
 }
 
-float my3dObjectBase::getRadius(){
+GLfloat my3dObjectBase::getRadius(){
 	return this->_radius;
 }
 
-bool my3dObjectBase::setWidth(float width){
+bool my3dObjectBase::setWidth(GLfloat width){
 	this->_width = width;
 	return true;
 }
 
-float my3dObjectBase::getWidth(){
+GLfloat my3dObjectBase::getWidth(){
 	return this->_width;
 }
 
-bool my3dObjectBase::setHeight(float height){
+bool my3dObjectBase::setHeight(GLfloat height){
 	this->_height = height;
 	return true;
 }
 
-float my3dObjectBase::getHeight(){
+GLfloat my3dObjectBase::getHeight(){
 	return this->_height;
 }
 
-bool my3dObjectBase::setSides(int sides){
+bool my3dObjectBase::setSides(GLint sides){
 	this->_sides = sides;
 	return true;
 }
 
-int my3dObjectBase::getSides(){
+GLint my3dObjectBase::getSides(){
 	return this->_sides;
 }
 
-bool my3dObjectBase::setScale(float scale){
+bool my3dObjectBase::setScale(GLfloat scale){
 	this->_scale = scale;
 	return true;
 }
 
-float my3dObjectBase::getScale(){
+GLfloat my3dObjectBase::getScale(){
 	return this->_scale;
 }
 
@@ -187,11 +189,43 @@ bool myCube::draw(){
 
 // myCylinder class definitions
 
-myCylinder::myCylinder(){
+myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_type = EmyObjectType::motCylinder;
+	this->_radius = radius;
+	this->_height = height;
 }
 
 myCylinder::~myCylinder(){
+}
+
+bool myCylinder::draw(){
+	GLfloat x = 0.0f, y = 0.0f;
+	GLfloat angle = 0.0f, angle_stepsize = 0.1f;
+
+	glBegin(GL_QUAD_STRIP);
+	while (angle < 2 * M_PI) {
+		x = this->_radius * cos(angle);
+		y = this->_radius * sin(angle);
+		glVertex3f(x, y, this->_height);
+		glVertex3f(x, y, 0.0);
+		angle = angle + angle_stepsize;
+	}
+	glVertex3f(this->_radius, 0.0, this->_height);
+	glVertex3f(this->_radius, 0.0, 0.0);
+	glEnd();
+
+	/** Draw the circle on top of cylinder */
+	glBegin(GL_POLYGON);
+	angle = 0.0;
+	while (angle < 2 * M_PI) {
+		x = this->_radius * cos(angle);
+		y = this->_radius * sin(angle);
+		glVertex3f(x, y, this->_height);
+		angle = angle + angle_stepsize;
+	}
+	glVertex3f(this->_radius, 0.0, this->_height);
+	glEnd();
+	return true;
 }
 
 // mySphere class definitions
@@ -239,7 +273,7 @@ myCamera::myCamera(){
 myCamera::~myCamera(){
 }
 
-bool myCamera::setLookAt(float x, float y, float z){
+bool myCamera::setLookAt(GLfloat x, GLfloat y, GLfloat z){
 	this->_lookAt.x = x;
 	this->_lookAt.y = y;
 	this->_lookAt.z = z;
@@ -264,7 +298,7 @@ bool myRaytrace::setOrder(int order){
 	return true;
 }
 
-int myRaytrace::getOrder(){
+GLint myRaytrace::getOrder(){
 	return this->_order;
 }
 

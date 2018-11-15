@@ -6,23 +6,22 @@
 
 // Struct to define vector type objects for 2D and 3D space
 struct float2{
-	float2(float _x = 0.0f, float _y = 0.0f) : x(_x), y(_y) {}
+	float2(GLfloat _x = 0.0f, GLfloat _y = 0.0f) : x(_x), y(_y) {}
 
-	float x;
-	float y;
+	GLfloat x;
+	GLfloat y;
 };
 
 struct float3{
-	float3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) : x(_x), y(_y), z(_z) {}
+	float3(GLfloat _x = 0.0f, GLfloat _y = 0.0f, GLfloat _z = 0.0f) : x(_x), y(_y), z(_z) {}
 
-	float x;
-	float y;
-	float z;
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
 };
 
 // Vertex with a color for the primitives to use with VBO
-struct VertexXYZColor
-{
+struct VertexXYZColor{
 	float3 m_Pos;
 	float3 m_Color;
 };
@@ -72,7 +71,7 @@ public:
 
 	EmyObjectType getObjectType();
 
-	bool setPosition(float x, float y, float z);
+	bool setPosition(GLfloat x, GLfloat y, GLfloat z);
 	float3 getPosition();
 
 protected:
@@ -115,35 +114,35 @@ public:
 	bool setTypeOfTexture(EmyTypeOfTexture typeOfTexture);
 	EmyTypeOfTexture getTypeOfTexture();
 
-	bool setTransparency(float transparency);
-	float getTransparency();
+	bool setTransparency(GLfloat transparency);
+	GLfloat getTransparency();
 
-	bool setRaidus(float radius);
-	float getRadius();
+	bool setRaidus(GLfloat radius);
+	GLfloat getRadius();
 
-	bool setWidth(float width);
-	float getWidth();
+	bool setWidth(GLfloat width);
+	GLfloat getWidth();
 
-	bool setHeight(float height);
-	float getHeight();
+	bool setHeight(GLfloat height);
+	GLfloat getHeight();
 
-	bool setSides(int sides);
-	int getSides();
+	bool setSides(GLint sides);
+	GLint getSides();
 
-	bool setScale(float scale);
-	float getScale();
+	bool setScale(GLfloat scale);
+	GLfloat getScale();
 
-private:
+protected:
 	struct myMaterial _material;
 	struct myTexture _texture;
 	EmyTypeOfTexture _typeOfTexture;
-	float _transparency;
+	GLfloat _transparency;
 
-	float _radius;
-	float _width;
-	float _height;
-	int _sides;
-	float _scale;
+	GLfloat _radius;
+	GLfloat _width;
+	GLfloat _height;
+	GLint _sides;
+	GLfloat _scale;
 };
 
 class myCube : public my3dObjectBase{
@@ -183,11 +182,12 @@ private:
 class myCylinder : public my3dObjectBase{
 
 public:
-	myCylinder();
+	myCylinder(GLfloat radius, GLfloat height);
 	~myCylinder();
 
-private:
+	bool draw();
 
+private:
 };
 
 class mySphere : public my3dObjectBase{
@@ -236,7 +236,7 @@ public:
 	myCamera();
 	~myCamera();
 
-	bool setLookAt(float x, float y, float z);
+	bool setLookAt(GLfloat x, GLfloat y, GLfloat z);
 	float3 getLookAt();
 
 private:
@@ -249,14 +249,14 @@ public:
 	myRaytrace();
 	~myRaytrace();
 
-	bool setOrder(int order);
-	int getOrder();
+	bool setOrder(GLint order);
+	GLint getOrder();
 
 	bool setMethod(EtypeOfMethodForRayTrace method);
 	EtypeOfMethodForRayTrace getTypeOfMethod();
 
 private:
 	EmyObjectType _type;
-	int _order;
+	GLint _order;
 	EtypeOfMethodForRayTrace _method;
 };
