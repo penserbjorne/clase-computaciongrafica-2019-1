@@ -183,12 +183,13 @@ private:
 class myCylinder : public my3dObjectBase{
 
 public:
+	myCylinder();
 	myCylinder(GLfloat radius, GLfloat height);
 	~myCylinder();
 
 	bool draw();
 
-private:
+protected:
 	VertexXYZColor _g_Vertices[128];
 	GLuint _g_Indices[128];
 	GLuint _g_IndicesTapa[64];
@@ -208,7 +209,6 @@ public:
 	~mySphere();
 
 	bool draw();
-	bool draw2();
 
 private:
 	GLfloat _lats;
@@ -225,11 +225,24 @@ private:
 class myPrism : public my3dObjectBase{
 
 public:
-	myPrism();
+	myPrism(GLfloat radius, GLfloat height, GLint sides);
 	~myPrism();
+	bool draw();
 
 private:
+	VertexXYZColor _g_Vertices[722];
+	GLuint _g_Indices[722];
+	GLuint _g_IndicesTapa[360];
+	GLuint _g_IndicesFondo[360];
 
+	// IDs for the buffers
+	GLuint _g_uiVerticesVBO = 0;
+	GLuint _g_uiIndicesVBO = 0;
+	GLuint _g_uiIndicesVBOTapa = 0;
+	GLuint _g_uiIndicesVBOFondo = 0;
+
+	int _size1;
+	int _size2;
 };
 
 class myOBJModel : public my3dObjectBase{

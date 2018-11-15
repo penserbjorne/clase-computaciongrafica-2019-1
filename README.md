@@ -16,7 +16,7 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
     - [x] Cubos
     - [x] Cilindros
     - [x] Esferas
-    - [ ] Prismas
+    - [x] Prismas
     - [ ] Modelos en formato OBJ
     - [ ] Planos
   - [ ] (10%) Se podrá colocar una textura a cada modelo, si el objeto es reflectivo o refractivo.

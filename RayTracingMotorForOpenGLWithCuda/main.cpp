@@ -30,6 +30,10 @@ std::clock_t g_CurrentTicks;
 myCube* unCubo;
 myCylinder* unCilindro;
 mySphere* unaEsfera;
+myPrism* unPrisma3;
+myPrism* unPrisma5;
+myPrism* unPrisma7;
+myPrism* unPrisma9;
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -232,6 +236,10 @@ void InitGL(int argc, char* argv[]){
 	unCubo = new myCube();
 	unCilindro = new myCylinder(1.0f, 1.0f);
 	unaEsfera = new mySphere(1.0f, 20.0f, 20.0f);
+	unPrisma3 = new myPrism(1.0f, 1.0f, 3);
+	unPrisma5 = new myPrism(1.0f, 1.0f, 5);
+	unPrisma7 = new myPrism(1.0f, 1.0f, 7);
+	unPrisma9 = new myPrism(1.0f, 1.0f, 9);
 }
 
 int main(int argc, char* argv[]){
@@ -250,7 +258,7 @@ void RenderScene(){
 
 	glEnable(GL_DEPTH_TEST);
 
-	glTranslatef(-1.5f, 1.0f, -6.0f);                                     // Translate back and to the left
+	glTranslatef(-1.5f, 4.5f, -12.0f);                                     // Translate back and to the left
 	glPushMatrix();                                                         // Push the current modelview matrix on the matrix stack
 	glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);                               // Rotate on all 3 axis
 	unCubo->draw();
@@ -262,16 +270,43 @@ void RenderScene(){
 	unCilindro->draw();
 	glPopMatrix();
 
-	glTranslatef(-1.5f, -3.0f, 0.0f);                                     // Back to center and lower screen
+	glTranslatef(-3.0f, -3.0f, 0.0f);                                     // Back to center and lower screen
 	glPushMatrix();
 	glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
-	/*glColor3f(1.0f, 1.0f, 0.0f);                                          // Yellow
-	glutSolidSphere(1.0f, 16, 16);                                        // Use GLUT to draw a solid sphere
-	*/
-	unaEsfera->draw2();
+	unaEsfera->draw();
 	/*glScalef(1.01f, 1.01f, 1.01f);
 	glColor3f(1.0f, 0.0f, 0.0f);                                          // Red
 	glutWireSphere(1.0f, 20, 20);                                         // Use GLUT to draw a wireframe sphere
 	*/
+	glPopMatrix();
+
+	glTranslatef(3.0f, 0.0f, 0.0f);                                     // Back to center and lower screen
+	glPushMatrix();
+	glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+	unaEsfera->draw();
+	glPopMatrix();
+
+	glTranslatef(-3.0f, -3.0f, 0.0f);                                     // Back to center and lower screen
+	glPushMatrix();
+	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+	unPrisma3->draw();
+	glPopMatrix();
+
+	glTranslatef(3.0f, 0.0f, 0.0f);                                     // Back to center and lower screen
+	glPushMatrix();
+	glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
+	unPrisma5->draw();
+	glPopMatrix();
+
+	glTranslatef(-3.0f, -3.0f, 0.0f);                                     // Back to center and lower screen
+	glPushMatrix();
+	glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+	unPrisma7->draw();
+	glPopMatrix();
+
+	glTranslatef(3.0f, 0.0f, 0.0f);                                     // Back to center and lower screen
+	glPushMatrix();
+	glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+	unPrisma9->draw();
 	glPopMatrix();
 }

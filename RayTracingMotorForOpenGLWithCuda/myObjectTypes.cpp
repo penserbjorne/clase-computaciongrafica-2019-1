@@ -85,9 +85,9 @@ EmyTypeOfTexture my3dObjectBase::getTypeOfTexture(){
 	return this->_typeOfTexture;
 }
 
-bool my3dObjectBase::setTransparency(float transparency){
-	this->_transparency = transparency;
-	return true;
+bool my3dObjectBase::setTransparency(GLfloat transparency){
+		this->_transparency = transparency;
+	return false;
 }
 
 GLfloat my3dObjectBase::getTransparency(){
@@ -189,6 +189,10 @@ bool myCube::draw(){
 }
 
 // myCylinder class definitions
+
+myCylinder::myCylinder(){
+
+}
 
 myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_type = EmyObjectType::motCylinder;
@@ -350,40 +354,7 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 mySphere::~mySphere(){
 }
 
-bool mySphere::draw()
-{
-	double user_theta = 0;
-	double user_height = 0; 
-
-	double lat0, z0, zr0;
-	double lat1, z1, zr1;
-
-	double lng, x, y;
-	
-	int i, j;
-	for (i = 0; i <= this->_lats; i++){
-		lat0 = M_PI * (-0.5 + (double)(i - 1) / this->_lats);
-		z0 = sin(lat0);
-		zr0 = cos(lat0);
-		lat1 = M_PI * (-0.5 + (double)i / this->_lats);
-		z1 = sin(lat1);
-		zr1 = cos(lat1);
-		glBegin(GL_QUAD_STRIP);
-		for (j = 0; j <= this->_longs; j++){
-			lng = 2 * M_PI * (double)(j - 1) / this->_longs;
-			x = cos(lng);
-			y = sin(lng);
-			glNormal3f(x * zr0, y * zr0, z0);
-			glVertex3f(x * zr0, y * zr0, z0);
-			glNormal3f(x * zr1, y * zr1, z1);
-			glVertex3f(x * zr1, y * zr1, z1);
-		}
-		glEnd();
-	}
-	return true;
-}
-
-bool mySphere::draw2(){
+bool mySphere::draw(){
 	// Create VBO's
 	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
 	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
@@ -424,11 +395,123 @@ bool mySphere::draw2(){
 
 // myPrism class definitions
 
-myPrism::myPrism(){
+myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_type = EmyObjectType::motPrism;
+	this->_radius = radius;
+	this->_height = height;
+	this->_sides = sides;
+	if (this->_sides > 360) {
+		this->_sides = 360;
+	}
+	
+
+	GLfloat x = 0.0f, y = 0.0f;
+	GLfloat angle = 0.0f, angle_stepsize = 0.0f;
+	int index = 0, index2 = 0;
+	angle_stepsize = 360 / this->_sides;
+
+	for(index = 0, index2 = 0; index < (this->_sides*2); index++, index2++) {
+		x = this->_radius * cos((angle/180) * M_PI);
+		y = this->_radius * sin((angle / 180) * M_PI);
+
+		this->_g_Indices[index] = index;
+		this->_g_IndicesTapa[index2] = index;
+		this->_g_Vertices[index] = {
+			float3(x, y, this->_height), // Coord
+			float3(x, y, this->_height) // Color
+		};
+		index++;
+
+		this->_g_Indices[index] = index;
+		this->_g_IndicesFondo[index2] = index;
+		this->_g_Vertices[index] = {
+			float3(x, y, 0.0f), // Coord
+			float3(x, y, 0.0f) // Position
+		};
+
+		angle += angle_stepsize;
+	}
+	this->_g_Indices[index] = index;
+	this->_g_IndicesTapa[index2] = index;
+	this->_g_Vertices[index] = {
+		float3(this->_radius, 0.0, this->_height), // Coord
+		float3(this->_radius, 0.0, this->_height) // Position
+	};
+	index++;
+
+	this->_g_Indices[index] = index;
+	this->_g_IndicesFondo[index2] = index;
+	this->_g_Vertices[index] = {
+		float3(this->_radius, 0.0, 0.0), // Coord
+		float3(this->_radius, 0.0, 0.0) // Position
+	};
+	index++;
+	index2++;
+	
+	this->_size1 = index;
+	this->_size2 = index2;
 }
 
 myPrism::~myPrism(){
+}
+
+bool myPrism::draw(){
+	// Create VBO's
+	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBOTapa));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBOFondo));
+
+	// Copy the vertex data to the VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(this->_g_Vertices), this->_g_Vertices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+	// Copy the index data to the VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_Indices), this->_g_Indices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOTapa);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_IndicesTapa), this->_g_IndicesTapa, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 1);
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOFondo);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_IndicesFondo), this->_g_IndicesFondo, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 2);
+
+	// We need to enable the client stats for the vertex attributes we want 
+	// to render even if we are not using client-side vertex arrays.
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	// Bind the vertices's VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
+	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+
+	// Bind the indices's VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glDrawElements(GL_QUAD_STRIP, this->_size1, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOTapa);
+	glDrawElements(GL_POLYGON, this->_size2, GL_UNSIGNED_INT, BUFFER_OFFSET(1));
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBOFondo);
+	glDrawElements(GL_POLYGON, this->_size2, GL_UNSIGNED_INT, BUFFER_OFFSET(2));
+
+	// Unbind buffers so client-side vertex arrays still work.
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 1);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 1);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 2);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 2);
+
+	// Disable the client side arrays again.
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	return true;
 }
 
 // myOBJModel class definitions
@@ -478,7 +561,7 @@ myRaytrace::myRaytrace(){
 myRaytrace::~myRaytrace(){
 }
 
-bool myRaytrace::setOrder(int order){
+bool myRaytrace::setOrder(GLint order){
 	this->_order = order;
 	return true;
 }
