@@ -71,6 +71,7 @@ public:
 
 	EmyObjectType getObjectType();
 
+	virtual bool draw() { return false; };
 	bool setPosition(GLfloat x, GLfloat y, GLfloat z);
 	float3 getPosition();
 
@@ -203,11 +204,22 @@ private:
 class mySphere : public my3dObjectBase{
 
 public:
-	mySphere();
+	mySphere(GLfloat radius, GLfloat lats, GLfloat longs);
 	~mySphere();
 
-private:
+	bool draw();
+	bool draw2();
 
+private:
+	GLfloat _lats;
+	GLfloat _longs;
+
+	VertexXYZColor _g_Vertices[882];
+	GLuint _g_Indices[882];
+
+	// IDs for the buffers
+	GLuint _g_uiVerticesVBO = 0;
+	GLuint _g_uiIndicesVBO = 0;
 };
 
 class myPrism : public my3dObjectBase{

@@ -15,7 +15,7 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
   - [ ] (10%) Modelos: Los modelos geométricos que se debe implementar son:
     - [x] Cubos
     - [x] Cilindros
-    - [ ] Esferas
+    - [x] Esferas
     - [ ] Prismas
     - [ ] Modelos en formato OBJ
     - [ ] Planos

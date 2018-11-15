@@ -304,11 +304,122 @@ bool myCylinder::draw(){
 
 // mySphere class definitions
 
-mySphere::mySphere(){
+mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 	this->_type = EmyObjectType::motSphere;
+	this->_radius = radius;
+	this->_lats = lats;
+	this->_longs = longs;
+
+	double user_theta = 0;
+	double user_height = 0;
+
+	double lat0, z0, zr0;
+	double lat1, z1, zr1;
+
+	double lng, x, y;
+
+	int i, j, index = 0;
+
+	for (i = 0; i <= this->_lats; i++) {
+		lat0 = M_PI * (-0.5 + (double)(i - 1) / this->_lats);
+		z0 = sin(lat0);
+		zr0 = cos(lat0);
+		lat1 = M_PI * (-0.5 + (double)i / this->_lats);
+		z1 = sin(lat1);
+		zr1 = cos(lat1);
+		for (j = 0; j <= this->_longs; j++) {
+			lng = 2 * M_PI * (double)(j - 1) / this->_longs;
+			x = cos(lng);
+			y = sin(lng);
+			this->_g_Indices[index] = index;
+			this->_g_Vertices[index] = {
+				float3(x * zr0, y * zr0, z0), // Coord
+				float3(x * zr0, y * zr0, z0) // Position
+			};
+			index++;
+			this->_g_Indices[index] = index;
+			this->_g_Vertices[index] = {
+				float3(x * zr1, y * zr1, z1), // Coord
+				float3(x * zr1, y * zr1, z1) // Position
+			};
+			index++;
+		}
+	}
 }
 
 mySphere::~mySphere(){
+}
+
+bool mySphere::draw()
+{
+	double user_theta = 0;
+	double user_height = 0; 
+
+	double lat0, z0, zr0;
+	double lat1, z1, zr1;
+
+	double lng, x, y;
+	
+	int i, j;
+	for (i = 0; i <= this->_lats; i++){
+		lat0 = M_PI * (-0.5 + (double)(i - 1) / this->_lats);
+		z0 = sin(lat0);
+		zr0 = cos(lat0);
+		lat1 = M_PI * (-0.5 + (double)i / this->_lats);
+		z1 = sin(lat1);
+		zr1 = cos(lat1);
+		glBegin(GL_QUAD_STRIP);
+		for (j = 0; j <= this->_longs; j++){
+			lng = 2 * M_PI * (double)(j - 1) / this->_longs;
+			x = cos(lng);
+			y = sin(lng);
+			glNormal3f(x * zr0, y * zr0, z0);
+			glVertex3f(x * zr0, y * zr0, z0);
+			glNormal3f(x * zr1, y * zr1, z1);
+			glVertex3f(x * zr1, y * zr1, z1);
+		}
+		glEnd();
+	}
+	return true;
+}
+
+bool mySphere::draw2(){
+	// Create VBO's
+	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
+
+	// Copy the vertex data to the VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(this->_g_Vertices), this->_g_Vertices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+	// Copy the index data to the VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_Indices), this->_g_Indices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+
+	// We need to enable the client stats for the vertex attributes we want 
+	// to render even if we are not using client-side vertex arrays.
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	// Bind the vertices's VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
+	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+
+	// Bind the indices's VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glDrawElements(GL_QUAD_STRIP, 882, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+	// Unbind buffers so client-side vertex arrays still work.
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+	// Disable the client side arrays again.
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	return true;
 }
 
 // myPrism class definitions

@@ -29,6 +29,7 @@ std::clock_t g_CurrentTicks;
 // Test
 myCube* unCubo;
 myCylinder* unCilindro;
+mySphere* unaEsfera;
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -230,6 +231,7 @@ void InitGL(int argc, char* argv[]){
 
 	unCubo = new myCube();
 	unCilindro = new myCylinder(1.0f, 1.0f);
+	unaEsfera = new mySphere(1.0f, 20.0f, 20.0f);
 }
 
 int main(int argc, char* argv[]){
@@ -263,10 +265,13 @@ void RenderScene(){
 	glTranslatef(-1.5f, -3.0f, 0.0f);                                     // Back to center and lower screen
 	glPushMatrix();
 	glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
-	glColor3f(1.0f, 1.0f, 0.0f);                                          // Yellow
+	/*glColor3f(1.0f, 1.0f, 0.0f);                                          // Yellow
 	glutSolidSphere(1.0f, 16, 16);                                        // Use GLUT to draw a solid sphere
-	glScalef(1.01f, 1.01f, 1.01f);
+	*/
+	unaEsfera->draw2();
+	/*glScalef(1.01f, 1.01f, 1.01f);
 	glColor3f(1.0f, 0.0f, 0.0f);                                          // Red
-	glutWireSphere(1.0f, 16, 16);                                         // Use GLUT to draw a wireframe sphere
+	glutWireSphere(1.0f, 20, 20);                                         // Use GLUT to draw a wireframe sphere
+	*/
 	glPopMatrix();
 }
