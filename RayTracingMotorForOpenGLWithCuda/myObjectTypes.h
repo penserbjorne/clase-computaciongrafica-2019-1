@@ -263,11 +263,10 @@ private:
 class myOBJModel : public my3dObjectBase{
 
 public:
-	myOBJModel();
+	myOBJModel(std::string pathToFile);
 	~myOBJModel();
 
 private:
-
 };
  
 class myPlane : public my3dObjectBase{

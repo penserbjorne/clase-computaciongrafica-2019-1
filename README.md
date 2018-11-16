@@ -45,7 +45,6 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 
 ### OpenGL
 
-- [Normal Mapping with Cg and OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/normal-mapping-with-cg-and-opengl/)
 - [Texturing and Lighting in OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/texturing-and-lighting-in-opengl/)
 - [Loading and Animating MD5 Models with OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/loading-and-animating-md5-models-with-opengl/)
 

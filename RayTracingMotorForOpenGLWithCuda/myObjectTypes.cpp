@@ -532,8 +532,9 @@ bool myPrism::draw(){
 
 // myOBJModel class definitions
 
-myOBJModel::myOBJModel(){
+myOBJModel::myOBJModel(std::string pathToFile){
 	this->_type = EmyObjectType::motOBJModel;
+	
 }
 
 myOBJModel::~myOBJModel(){
