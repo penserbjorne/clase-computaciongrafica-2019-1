@@ -1,5 +1,3 @@
-#pragma comment(lib, "SOIL.lib")
-
 // Standar C++ libraries
 #define _USE_MATH_DEFINES
 #include <iostream>
@@ -9,8 +7,7 @@
 // Standar GL libraries
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "glm/glm.hpp"
-#include "soil/SOIL.h"
+//#include "glm/glm.hpp"
 
 // My unhappy Code >;v
 #include "myObjectTypes.h"

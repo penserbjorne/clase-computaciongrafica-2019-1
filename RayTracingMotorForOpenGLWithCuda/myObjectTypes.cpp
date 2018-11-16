@@ -48,6 +48,7 @@ my3dObjectBase::my3dObjectBase(){
 	this->_type = EmyObjectType::mot3dBase;
 	this->_sizeVertex = 0;
 	this->_sizeIndex = 0;
+	this->_textureObject = 0;
 }
 
 my3dObjectBase::~my3dObjectBase(){
@@ -86,6 +87,14 @@ bool my3dObjectBase::setTypeOfTexture(EmyTypeOfTexture typeOfTexture){
 
 EmyTypeOfTexture my3dObjectBase::getTypeOfTexture(){
 	return this->_typeOfTexture;
+}
+
+bool my3dObjectBase::loadTexture(std::string pathToTexture){
+	if (this->_textureObject = SOIL_load_OGL_texture(pathToTexture.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS)) {
+		glBindTexture(GL_TEXTURE_3D, this->_textureObject);
+		return true;
+	}
+	return false;
 }
 
 bool my3dObjectBase::setTransparency(GLfloat transparency){

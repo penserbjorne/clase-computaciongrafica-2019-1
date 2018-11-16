@@ -2,6 +2,7 @@
 
 // GLEW to use GL types like GLuint
 #include <GL/glew.h>
+#include "soil2/SOIL2.h"
 
 #define _USE_MATH_DEFINES
 #include <iostream>
@@ -134,6 +135,8 @@ public:
 	bool setTypeOfTexture(EmyTypeOfTexture typeOfTexture);
 	EmyTypeOfTexture getTypeOfTexture();
 
+	bool loadTexture(std::string pathToTexture);
+
 	bool setTransparency(GLfloat transparency);
 	GLfloat getTransparency();
 
@@ -170,6 +173,8 @@ protected:
 
 	GLsizei _sizeVertex;
 	GLsizei _sizeIndex;
+
+	GLuint _textureObject;
 };
 
 class myCube : public my3dObjectBase{
