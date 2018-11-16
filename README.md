@@ -40,6 +40,8 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 - OpenGL
 - GLUT
 - GLEW
+- GLM
+- SOIL
 - Cuda 10
 - Visual Studio 2017
 
