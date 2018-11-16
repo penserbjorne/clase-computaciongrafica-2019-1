@@ -1,8 +1,7 @@
 #pragma once
-
 // GLEW to use GL types like GLuint
 #include <GL/glew.h>
-#include "soil2/SOIL2.h"
+#include <soil.h>
 
 #define _USE_MATH_DEFINES
 #include <iostream>
