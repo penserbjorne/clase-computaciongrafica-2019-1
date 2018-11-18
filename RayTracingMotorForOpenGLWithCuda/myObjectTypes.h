@@ -1,9 +1,12 @@
 #pragma once
-// GLEW to use GL types like GLuint
-#include <GL/glew.h>
-#include <soil.h>
 
 #define _USE_MATH_DEFINES
+
+// GLEW to use GL types like GLuint
+#include <GL/glew.h>
+#include "glm/glm.hpp"
+#include <soil.h>
+
 #include <iostream>
 #include <cstddef> // To use NULL
 #include <cmath>
@@ -38,17 +41,122 @@ struct float3{
 	GLfloat z;
 };
 
+struct float4 {
+	float4(GLfloat _x = 0.0f, GLfloat _y = 0.0f, GLfloat _z = 0.0f, GLfloat _w = 0.0f) : x(_x), y(_y), z(_z), w(_w) {}
+
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
+	GLfloat w;
+};
+
+struct color4 {
+	color4(GLfloat _r = 0.0f, GLfloat _g = 0.0f, GLfloat _b = 0.0f, GLfloat _a = 0.0f) : r(_r), g(_g), b(_b), a(_a) {}
+
+	GLfloat r;
+	GLfloat g;
+	GLfloat b;
+	GLfloat a;
+};
+
 // Vertex with a color for the primitives to use with VBO
 struct VertexXYZColor{
 	float3 m_Pos;
 	float3 m_Color;
 };
 
-struct myMaterial {
-	// Pendiente de implementar y definir
+struct Light
+{
+	Light(GLenum lightID = GL_LIGHT0
+		, color4 ambient = color4(1.0, 1.0, 1.0, 1.0)
+		, color4 diffuse = color4(.3, .3, .3, 1.0)
+		, color4 specular = color4(1.0, 1.0, 1.0, 1.0)
+		, float4 position = float4(0.0, 0.0, 1.0, 0.0)
+		, float3 spotDirection = float3(0.0, 0.0, 1.0)
+		, float  spotExponent = 0.0
+		, float  spotCutoff = 180.0f
+		, float  constantAttenuation = 1.0
+		, float  linearAttenuation = 0.0
+		, float  quadraticAttenuation = 0.0)
+		: m_LightID(lightID)
+		, m_Ambient(ambient)
+		, m_Diffuse(diffuse)
+		, m_Specular(specular)
+		, m_Position(position)
+		, m_SpotDirection(spotDirection)
+		, m_SpotExponent(spotExponent)
+		, m_SpotCutoff(spotCutoff)
+		, m_ConstantAttenuation(constantAttenuation)
+		, m_LinearAttenuation(linearAttenuation)
+		, m_QuadraticAttenuation(quadraticAttenuation)
+	{}
+
+	void Activate()
+	{
+		glEnable(m_LightID);
+		glLightfv(m_LightID, GL_AMBIENT, &(m_Ambient.r));
+		glLightfv(m_LightID, GL_DIFFUSE, &(m_Diffuse.r));
+		glLightfv(m_LightID, GL_SPECULAR, &(m_Specular.r));
+		glLightfv(m_LightID, GL_POSITION, &(m_Position.x));
+		glLightfv(m_LightID, GL_SPOT_DIRECTION, &(m_SpotDirection.x));
+		glLightf(m_LightID, GL_SPOT_EXPONENT, m_SpotExponent);
+		glLightf(m_LightID, GL_SPOT_CUTOFF, m_SpotCutoff);
+		glLightf(m_LightID, GL_CONSTANT_ATTENUATION, m_ConstantAttenuation);
+		glLightf(m_LightID, GL_LINEAR_ATTENUATION, m_LinearAttenuation);
+		glLightf(m_LightID, GL_QUADRATIC_ATTENUATION, m_QuadraticAttenuation);
+	}
+
+	void Deactivate()
+	{
+		glDisable(m_LightID);
+	}
+
+	GLenum m_LightID;
+	color4 m_Ambient;
+	color4 m_Diffuse;
+	color4 m_Specular;
+
+	float4 m_Position;
+	float3 m_SpotDirection;
+	float  m_SpotExponent;
+	float  m_SpotCutoff;
+	float  m_ConstantAttenuation;
+	float  m_LinearAttenuation;
+	float  m_QuadraticAttenuation;
 };
 
-struct myTexture{
+struct Material
+{
+	Material(color4 ambient = color4(0.2, 0.2, 0.2, 1.0)
+		, color4 diffuse = color4(0.8, 0.8, 0.8, 1.0)
+		, color4 specular = color4(0.0, 0.0, 0.0, 1.0)
+		, color4 emission = color4(0.0, 0.0, 0.0, 1.0)
+		, float shininess = 0)
+		: m_Ambient(ambient)
+		, m_Diffuse(diffuse)
+		, m_Specular(specular)
+		, m_Emission(emission)
+		, m_Shininess(shininess)
+	{}
+
+	void Apply()
+	{
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, &(m_Ambient.r));
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, &(m_Diffuse.r));
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m_Specular.r));
+		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, &(m_Emission.r));
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m_Shininess);
+	}
+
+	color4 m_Ambient;
+	color4 m_Diffuse;
+	color4 m_Specular;
+	color4 m_Emission;
+	float  m_Shininess;
+
+};
+
+struct myMaterial {
 	// Pendiente de implementar y definir
 };
 
@@ -128,13 +236,11 @@ public:
 	bool setMaterial(struct myMaterial material);
 	struct myMaterial getMaterial();
 
-	bool setTexture(struct myTexture texture);
-	struct myTexture getTexture();
+	bool loadTexture(std::string pathToTexture);
+	bool unloadTexture();
 
 	bool setTypeOfTexture(EmyTypeOfTexture typeOfTexture);
 	EmyTypeOfTexture getTypeOfTexture();
-
-	bool loadTexture(std::string pathToTexture);
 
 	bool setTransparency(GLfloat transparency);
 	GLfloat getTransparency();
@@ -156,7 +262,6 @@ public:
 
 protected:
 	struct myMaterial _material;
-	struct myTexture _texture;
 	EmyTypeOfTexture _typeOfTexture;
 	GLfloat _transparency;
 

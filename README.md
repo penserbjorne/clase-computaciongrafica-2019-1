@@ -65,6 +65,7 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 ### CUDA
 
 - [Introduction to CUDA using Visual Studio 2008 by Jeremiah van Oosten.](https://www.3dgep.com/introduction-to-cuda-using-visual-studio-2008/)
+- [An Even Easier Introduction to CUDA](https://devblogs.nvidia.com/even-easier-introduction-cuda/)
 - [CUDA Thread Execution Model by Jeremiah van Oosten.](https://www.3dgep.com/cuda-thread-execution-model/)
 - [CUDA Memory Model by Jeremiah van Oosten.](https://www.3dgep.com/cuda-memory-model/)
 - [Introduction to CUDA 5.0 by Jeremiah van Oosten.](https://www.3dgep.com/introduction-to-cuda-5-0/)
@@ -75,3 +76,4 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 - [Ray Tracing in One Weekend by Peter Shirley.](https://github.com/petershirley/raytracinginoneweekend)
 - [Ray Tracing The Next Week by Peter Shirley.](https://github.com/petershirley/raytracingthenextweek)
 - [Ray Tracing The Rest of Your Life by Peter Shirley.](https://github.com/petershirley/raytracingtherestofyourlife)
+- [Accelerated Ray Tracing in One Weekend in CUDA](https://devblogs.nvidia.com/accelerated-ray-tracing-cuda/)

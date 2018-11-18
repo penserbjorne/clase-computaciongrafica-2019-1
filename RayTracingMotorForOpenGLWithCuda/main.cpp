@@ -38,6 +38,7 @@ myPrism* unPrisma7;
 myPrism* unPrisma9;
 myPlane* unPlano;
 void RenderScene();
+void RenderScene1();
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -53,13 +54,14 @@ void Cleanup(int exitCode, bool bExit = true);
 // Drawer!
 void DisplayGL(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 
 	RenderScene();
+	RenderScene1();
 
 	// Render Stuff
 	glutSwapBuffers();
-	//glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 // To update the logic of our demo :D
@@ -71,7 +73,7 @@ void IdleGL(){
 	fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC;
 
 	// Rate of rotation in (degrees) per second
-	const float fRotationRate = 50.0f;
+	const float fRotationRate = 25.0f;
 
 	// Update our rotation parameters
 	g_fRotate1 += ((fRotationRate + 10) * fDeltaTime);
@@ -89,22 +91,6 @@ void IdleGL(){
 void KeyboardGL(unsigned char c, int x, int y){
 
 	switch (c){
-		case '1':{
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);                         // White background
-		}
-		break;
-		case '2':{
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);                         // Black background
-		}
-		break;
-		case '3':{
-			glClearColor(0.27f, 0.27f, 0.27f, 1.0f);                      // Dark-Gray background
-		}
-		break;
-		case '4':{
-			glClearColor(0.73f, 0.73f, 0.73f, 1.0f);                      // Light-Gray background
-		}
-		break;
 		case 's':
 		case 'S':{
 			std::cout << "Shade Model: GL_SMOOTH" << std::endl;
@@ -185,6 +171,13 @@ void ReshapeGL(int w, int h){
 	glutPostRedisplay();
 }
 
+Light g_SunLight(GL_LIGHT0, color4(0, 0, 0, 1), color4(1, 1, 1, 1), color4(1, 1, 1, 1), float4(0, 0, 0, 1));
+
+// Material properties
+Material g_SunMaterial(color4(0, 0, 0, 1), color4(1, 1, 1, 1), color4(1, 1, 1, 1));
+Material g_EarthMaterial(color4(0.2, 0.2, 0.2, 1.0), color4(1, 1, 1, 1), color4(1, 1, 1, 1), color4(0, 0, 0, 1), 50);
+Material g_MoonMaterial(color4(0.1, 0.1, 0.1, 1.0), color4(1, 1, 1, 1), color4(0.2, 0.2, 0.2, 1), color4(0, 0, 0, 1), 10);
+
 // Setup the OpenGL and GLUt cotnext
 void InitGL(int argc, char* argv[]){
 
@@ -200,7 +193,7 @@ void InitGL(int argc, char* argv[]){
 		(iScreenHeight - g_iWindowHeight) / 2);
 	glutInitWindowSize(g_iWindowWidth, g_iWindowHeight);
 
-	g_iGLUTWindowHandle = glutCreateWindow("OpenGL");
+	g_iGLUTWindowHandle = glutCreateWindow("Ray Tracing Motor for OpenGL with CUDA by Penserbjorne");
 
 	// Init GLEW
 	if (glewInit() != GLEW_OK){
@@ -225,11 +218,20 @@ void InitGL(int argc, char* argv[]){
 	glutReshapeFunc(ReshapeGL);
 
 	// Setup initial GL State
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black light
 	glClearDepth(1.0f);
 
 	glShadeModel(GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
+
+	// Renormalize scaled normals so that lighting still works properly.
+	glEnable(GL_NORMALIZE);
+
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
+
+	// Specify a global ambient
+	GLfloat globalAmbient[] = { 0.2, 0.2, 0.2, 1.0 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
 	unCubo = new myCube();
 	unCilindro = new myCylinder(1.0f, 1.0f);
@@ -250,16 +252,57 @@ int main(int argc, char* argv[]){
 	glutMainLoop();
 }
 
+void RenderScene1()
+{
+	glMatrixMode(GL_MODELVIEW);	// Switch to modelview matrix mode
+	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	glLoadIdentity();
+
+	// Move the scene
+	glTranslatef(0.0f, 0.0f, -100.0f);
+
+	// Sun
+	glPushMatrix();
+		glRotatef(g_fRotate1, 0.0f, -1.0f, 0.0f);
+		glTranslatef(60.0f, 0.0f, 0.0f);
+		g_SunLight.Activate();
+		unCilindro->loadTexture("./textures/paper.jpg");
+		g_SunMaterial.Apply();
+		unCilindro->draw();
+	glPopMatrix();
+
+	// Earth
+	glPushMatrix();
+		glRotatef(g_fRotate2, 0.0f, 0.0f, -1.0f); // Rotate the earth around it's axis
+		glScalef(12.756f, 12.756f, 12.756f);  // The earth's diameter is about 12,756 Km
+		unaEsfera->loadTexture("./textures/mario.png");
+		g_EarthMaterial.Apply();
+		unaEsfera->draw();
+	glPopMatrix();
+
+	// Moon
+	glPushMatrix();
+		glRotatef(g_fRotate2, 0.0f, 0.0f, -1.0f);// Rotate the moon around it's axis
+		glTranslatef(50.0f, 0.0f, 0.0f); // Translate the moon away from the earth
+		glScalef(3.476f, 3.476f, 3.476f);
+		unCubo->loadTexture("./textures/grunge.jpg");
+		g_MoonMaterial.Apply();
+		unaEsfera->draw();
+	glPopMatrix();
+}
+
 void RenderScene(){
 
 	glMatrixMode(GL_MODELVIEW);
+	//glDisable(GL_LIGHTING);
 	glLoadIdentity();
-
-	glEnable(GL_DEPTH_TEST);
 
 	glTranslatef(-1.5f, 4.5f, -12.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+		unCubo->loadTexture("./textures/uno.png");
+		g_EarthMaterial.Apply();
 		unCubo->draw();
 	glPopMatrix();
 
@@ -267,6 +310,8 @@ void RenderScene(){
 	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+		unCilindro->loadTexture("./textures/dos.png");
+		g_EarthMaterial.Apply();
 		unCilindro->draw();
 	glPopMatrix();
 
@@ -274,36 +319,44 @@ void RenderScene(){
 	glTranslatef(-3.0f, -3.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
+		unaEsfera->loadTexture("./textures/tres.png");
+		g_EarthMaterial.Apply();
 		unaEsfera->draw();
 	glPopMatrix();
 	
 	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+		unPlano->loadTexture("./textures/cuatro.png");
+		g_EarthMaterial.Apply();
 		unPlano->draw();
 	glPopMatrix();
 
 	glTranslatef(-3.0f, -3.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+		unPrisma3->loadTexture("./textures/cinco.png");
 		unPrisma3->draw();
 	glPopMatrix();
 
 	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate3, 1.0f, 1.0f, 1.0f);
+		unPrisma5->loadTexture("./textures/seis.png");
 		unPrisma5->draw();
 	glPopMatrix();
 
 	glTranslatef(-3.0f, -3.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+		unPrisma7->loadTexture("./textures/siete.png");
 		unPrisma7->draw();
 	glPopMatrix();
 
 	glTranslatef(3.0f, 0.0f, 0.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate2, 1.0f, 1.0f, 1.0f);
+		unPrisma9->loadTexture("./textures/uno.png");
 		unPrisma9->draw();
 	glPopMatrix();
 	

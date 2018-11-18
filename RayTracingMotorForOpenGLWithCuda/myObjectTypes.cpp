@@ -71,13 +71,30 @@ myMaterial my3dObjectBase::getMaterial(){
 	return this->_material;
 }
 
-bool my3dObjectBase::setTexture(myTexture texture){
-	this->_texture = texture;
-	return true;
+bool my3dObjectBase::loadTexture(std::string pathToTexture) {
+	if (!this->_textureObject) {
+		this->_textureObject = SOIL_load_OGL_texture(pathToTexture.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+		if (this->_textureObject) {
+			std::cout << "Se cargo la textura " << pathToTexture.c_str()  << ""<< std::endl;
+		} else {
+			std::cout << "No se cargo la textura " << pathToTexture.c_str() << "" << std::endl;
+		}
+	}
+	if (this->_textureObject) {
+		glBindTexture(GL_TEXTURE_2D, this->_textureObject);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		return true;
+	}
+	return false;
 }
 
-myTexture my3dObjectBase::getTexture(){
-	return this->_texture;
+bool my3dObjectBase::unloadTexture(){
+	this->_textureObject = 0;
+	return this->_textureObject;
 }
 
 bool my3dObjectBase::setTypeOfTexture(EmyTypeOfTexture typeOfTexture){
@@ -87,14 +104,6 @@ bool my3dObjectBase::setTypeOfTexture(EmyTypeOfTexture typeOfTexture){
 
 EmyTypeOfTexture my3dObjectBase::getTypeOfTexture(){
 	return this->_typeOfTexture;
-}
-
-bool my3dObjectBase::loadTexture(std::string pathToTexture){
-	if (this->_textureObject = SOIL_load_OGL_texture(pathToTexture.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS)) {
-		glBindTexture(GL_TEXTURE_3D, this->_textureObject);
-		return true;
-	}
-	return false;
 }
 
 bool my3dObjectBase::setTransparency(GLfloat transparency){
