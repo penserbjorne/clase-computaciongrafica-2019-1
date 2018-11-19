@@ -91,18 +91,33 @@ void IdleGL(){
 void KeyboardGL(unsigned char c, int x, int y){
 
 	switch (c){
+		case 'w':
+		case 'W': {
+			std::cout << "Adelante" << std::endl;
+		}
+		break;
 		case 's':
 		case 'S':{
-			std::cout << "Shade Model: GL_SMOOTH" << std::endl;
-			// Switch to smooth shading model
-			glShadeModel(GL_SMOOTH);
+			std::cout << "Atras" << std::endl;
+		}
+		break;
+		case 'd':
+		case 'D': {
+			std::cout << "Derecha" << std::endl;
+		}
+		break;
+		case 'a':
+		case 'A': {
+			std::cout << "Izquierda" << std::endl;
 		}
 		break;
 		case 'f':
 		case 'F':{
-			std::cout << "Shade Model: GL_FLAT" << std::endl;
+			//std::cout << "Shade Model: GL_FLAT" << std::endl;
 			// Switch to flat shading model
-			glShadeModel(GL_FLAT);
+			//glShadeModel(GL_FLAT);
+			// Switch to smooth shading model
+			//glShadeModel(GL_SMOOTH);
 		}
 		break;
 		case 'r':
@@ -126,15 +141,15 @@ void KeyboardGL(unsigned char c, int x, int y){
 }
 
 void MouseGL(int button, int state, int x, int y){
-
+	std::cout << "MouseFL; Boton:" << button << " X:"<< x << " Y:" << y << std::endl;
 }
 
 void MotionGL(int x, int y){
-
+	std::cout << "MotionGL; X:" << x << " Y:" << y << std::endl;
 }
 
 void PassiveMotionGL(int x, int y){
-
+	std::cout << "PassiveMotionGL; X:" << x << " Y:" << y << std::endl;
 }
 
 // Only destroy the render window we have created.
