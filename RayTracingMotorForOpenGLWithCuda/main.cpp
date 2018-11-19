@@ -7,7 +7,6 @@
 // Standar GL libraries
 #include <GL/glew.h>
 #include <GL/glut.h>
-//#include "glm/glm.hpp"
 
 // My unhappy Code >;v
 #include "myObjectTypes.h"
@@ -32,7 +31,6 @@ float deltaTicks, fDeltaTime;
 // Test
 myCameraFPS camara;
 float lastX = 0.0, lastY = 0.0;
-float cameraSteps = 5.0f;
 
 myCube* unCubo;
 myCylinder* unCilindro;
@@ -107,22 +105,22 @@ void KeyboardGL(unsigned char c, int x, int y){
 	switch (c){
 		case 'w':
 		case 'W': {
-			camara.ProcessKeyboard(Camera_Movement::C_FORWARD, fDeltaTime * cameraSteps);
+			camara.processKeyboard(Camera_Movement::C_FORWARD, fDeltaTime);
 		}
 		break;
 		case 's':
 		case 'S':{
-			camara.ProcessKeyboard(Camera_Movement::C_BACKWARD, fDeltaTime * cameraSteps);
+			camara.processKeyboard(Camera_Movement::C_BACKWARD, fDeltaTime);
 		}
 		break;
 		case 'd':
 		case 'D': {
-			camara.ProcessKeyboard(Camera_Movement::C_RIGHT, fDeltaTime * cameraSteps);
+			camara.processKeyboard(Camera_Movement::C_RIGHT, fDeltaTime);
 		}
 		break;
 		case 'a':
 		case 'A': {
-			camara.ProcessKeyboard(Camera_Movement::C_LEFT, fDeltaTime * cameraSteps);
+			camara.processKeyboard(Camera_Movement::C_LEFT, fDeltaTime);
 		}
 		break;
 		case 'f':
@@ -157,16 +155,16 @@ void KeyboardGL(unsigned char c, int x, int y){
 void SpecialFunc(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP:
-		camara.ProcessKeyboard(Camera_Movement::C_FORWARD, fDeltaTime * cameraSteps);
+		camara.processKeyboard(Camera_Movement::C_FORWARD, fDeltaTime);
 		break;
 	case GLUT_KEY_DOWN:
-		camara.ProcessKeyboard(Camera_Movement::C_BACKWARD, fDeltaTime * cameraSteps);
+		camara.processKeyboard(Camera_Movement::C_BACKWARD, fDeltaTime);
 		break;
 	case GLUT_KEY_LEFT:
-		camara.ProcessKeyboard(Camera_Movement::C_LEFT, fDeltaTime * cameraSteps);
+		camara.processKeyboard(Camera_Movement::C_LEFT, fDeltaTime);
 		break;
 	case GLUT_KEY_RIGHT:
-		camara.ProcessKeyboard(Camera_Movement::C_RIGHT, fDeltaTime * cameraSteps);
+		camara.processKeyboard(Camera_Movement::C_RIGHT, fDeltaTime);
 		break;
 	}
 }
@@ -181,7 +179,7 @@ void MotionGL(int x, int y){
 
 	std::cout << "MotionGL; X:" << x << " Y:" << y << std::endl;
 
-	camara.ProcessMouseMovement(-xoffset, yoffset, true);
+	camara.processMouseMovement(-xoffset, yoffset, true);
 	lastX = x;
 	lastY = y;
 }
@@ -348,6 +346,8 @@ void RenderScene(){
 	glDisable(GL_LIGHTING);
 	glLoadIdentity();
 
+	glPushMatrix();
+
 	glTranslatef(-1.5f, 4.5f, -12.0f);
 	glPushMatrix();
 		glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
@@ -410,4 +410,5 @@ void RenderScene(){
 		unPrisma9->draw();
 	glPopMatrix();
 	
+	glPopMatrix();
 }

@@ -21,8 +21,8 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
     - [x] Planos
   - [ ] (10%) Se podrá colocar una textura a cada modelo, si el objeto es reflectivo o refractivo.
   - [ ] (10%) Múltiples cámaras.
-    - [ ] Manejar la cámara en primera persona y la cámara orbital (Arcball).
-      - [ ] Para ambas cámaras los movimientos de pitch y yaw realizarlos con el mouse.
+    - [x] Manejar la cámara en primera persona y la cámara orbital (Arcball).
+      - [x] Para ambas cámaras los movimientos de pitch y yaw realizarlos con el mouse.
     - [ ] Al seleccionar un objeto en específico de la escena crear una nueva cámara Orbital que permite visualizar al objeto desde todos los ángulos.
     - [ ] Se podrá cambiar las múltiples cámaras con combinaciones de teclas.
  - [ ] (10%) Configuración del orden del ray-tracing.
