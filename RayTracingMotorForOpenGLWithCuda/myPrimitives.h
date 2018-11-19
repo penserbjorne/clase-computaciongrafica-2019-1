@@ -206,7 +206,8 @@ public:
 	struct myMaterial getMaterial();
 
 	bool loadTexture(std::string pathToTexture);
-	bool unloadTexture();
+	bool bindTexture();
+	bool unbindTexture();
 
 	bool setTypeOfTexture(EmyTypeOfTexture typeOfTexture);
 	EmyTypeOfTexture getTypeOfTexture();
@@ -252,6 +253,8 @@ protected:
 	GLenum _drawMode;
 
 	GLuint _textureObject;
+	int _textureWidth;
+	int _textureHeight;
 };
 
 class myCube : public my3dObjectBase{

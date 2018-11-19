@@ -40,7 +40,11 @@ myPrism* unPrisma7;
 myPrism* unPrisma9;
 myPlane* unPlano;
 myGrid* unGrid;
-void RenderScene1();
+my3dObjectBase* unObjeto1;
+my3dObjectBase* unObjeto2;
+my3dObjectBase* unObjeto3;
+
+// Sun light
 Light g_SunLight(GL_LIGHT0, glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1), glm::vec4(0, 0, 0, 1));
 
 // Material properties
@@ -85,7 +89,7 @@ void DisplayGL(){
 	if (g_fRotate1 > 360.0)
 		g_fRotate1 -= 360;
 
-	g_fRotate1 += 0.1;
+	//g_fRotate1 += 0.1;
 
 	glPushMatrix();
 
@@ -96,10 +100,10 @@ void DisplayGL(){
 			glRotatef((double)g_fRotate1, 1.0, 0.0, 0.0);
 			glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 			glTranslatef(light_position[0], light_position[1], light_position[2]);
-			glDisable(GL_LIGHTING);
-			glColor3f(1.0, 1.0, 1.0);
+			//glDisable(GL_LIGHTING);
+			//glColor3f(1.0, 1.0, 1.0);
 			glutWireCube(0.1);
-			glEnable(GL_LIGHTING);
+			//glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		// Cube to reference light1
@@ -107,32 +111,36 @@ void DisplayGL(){
 			glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
 			glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
 			glTranslatef(light1_position[0], light1_position[1], light1_position[2]);
-			glDisable(GL_LIGHTING);
-			glColor3f(1.0, 1.0, 1.0);
+			//glDisable(GL_LIGHTING);
+			//glColor3f(1.0, 1.0, 1.0);
 			glutWireCube(0.1);
-			glEnable(GL_LIGHTING);
+			//glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		// Grid
 		glPushMatrix();
 			glTranslatef(0.0, -0.5, 0.0);
 			glRotatef(-90.0f, 1.0, 0.0, 0.0);
+			//glDisable(GL_LIGHTING);
 			unGrid->draw2();
+			//glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		glPushMatrix();
+			//glDisable(GL_LIGHTING);
 			glTranslatef(-10.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unCubo->loadTexture("./textures/uno.png");
+			unCubo->bindTexture();
 			//g_EarthMaterial.Apply();
 			unCubo->draw();
 			//glutSolidSphere(0.5, 20, 20);
+			//glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		glPushMatrix();
 			glTranslatef(-7.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unaEsfera->loadTexture("./textures/dos.png");
+			unaEsfera->bindTexture();
 			unaEsfera->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -140,7 +148,7 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(-4.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unCilindro->loadTexture("./textures/tres.png");
+			unCilindro->bindTexture();
 			unCilindro->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -148,7 +156,7 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(-1.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unPlano->loadTexture("./textures/cuatro.png");
+			unPlano->bindTexture();
 			unPlano->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -156,7 +164,7 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(2.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unPrisma3->loadTexture("./textures/cinco.png");
+			unPrisma3->bindTexture();
 			unPrisma3->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -164,7 +172,7 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(5.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unPrisma5->loadTexture("./textures/seis.png");
+			unPrisma5->bindTexture();
 			unPrisma5->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -172,7 +180,7 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(8.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unPrisma7->loadTexture("./textures/siete.png");
+			unPrisma7->bindTexture();
 			unPrisma7->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -180,14 +188,37 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(11.0, 0.0, -5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
-			unPrisma9->loadTexture("./textures/uno.png");
+			unPrisma9->bindTexture();
 			unPrisma9->draw();
 			//glutSolidSphere(0.5, 20, 20);
+		glPopMatrix();
+
+		// Otros ;v
+			glPushMatrix();
+			glTranslatef(-1.0, 0.0, 5.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			unObjeto1->bindTexture();
+			glutSolidCube(1);
+		glPopMatrix();
+
+		glPushMatrix();
+			glTranslatef(2.0, 0.0, 5.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			unObjeto2->bindTexture();
+			glutSolidSphere(0.5, 20, 20);
+		glPopMatrix();
+
+		glPushMatrix();
+			glTranslatef(5.0, 0.0, 5.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			unObjeto3->bindTexture();
+			glutSolidTeapot(1);
 		glPopMatrix();
 
 	glPopMatrix();
 	// Render Stuff
 	glutSwapBuffers();
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // To update the logic of our demo :D
@@ -401,12 +432,12 @@ void InitGL(int argc, char* argv[]){
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);
 
-	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
 
 	unCubo = new myCube();
 	unCilindro = new myCylinder(1.0f, 1.0f);
@@ -417,7 +448,21 @@ void InitGL(int argc, char* argv[]){
 	unPrisma9 = new myPrism(1.0f, 1.0f, 9);
 	unPlano = new myPlane();
 	unGrid = new myGrid(0.3f, 20.0);
+	unObjeto1 = new my3dObjectBase();
+	unObjeto2 = new my3dObjectBase();
+	unObjeto3 = new my3dObjectBase();
 
+	unCubo->loadTexture("./textures/uno.png");
+	unaEsfera->loadTexture("./textures/dos.png");
+	unCilindro->loadTexture("./textures/tres.png");
+	unPlano->loadTexture("./textures/cuatro.png");
+	unPrisma3->loadTexture("./textures/cinco.png");
+	unPrisma5->loadTexture("./textures/seis.png");
+	unPrisma7->loadTexture("./textures/siete.png");
+	unPrisma9->loadTexture("./textures/uno.png");
+	unObjeto1->loadTexture("./textures/paper.jpg");
+	unObjeto2->loadTexture("./textures/mario.jpg");
+	unObjeto3->loadTexture("./textures/grunge.jpg");
 }
 
 int main(int argc, char* argv[]){
@@ -427,44 +472,4 @@ int main(int argc, char* argv[]){
 
 	InitGL(argc, argv);
 	glutMainLoop();
-}
-
-void RenderScene1()
-{
-	glMatrixMode(GL_MODELVIEW);	// Switch to modelview matrix mode
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	glLoadIdentity();
-
-	// Move the scene
-	glTranslatef(0.0f, 0.0f, -100.0f);
-
-	// Sun
-	glPushMatrix();
-		glRotatef(g_fRotate1, 0.0f, -1.0f, 0.0f);
-		glTranslatef(60.0f, 0.0f, 0.0f);
-		g_SunLight.Activate();
-		unCilindro->loadTexture("./textures/paper.jpg");
-		g_SunMaterial.Apply();
-		unCilindro->draw();
-	glPopMatrix();
-
-	// Earth
-	glPushMatrix();
-		glRotatef(g_fRotate2, 0.0f, 0.0f, -1.0f); // Rotate the earth around it's axis
-		glScalef(12.756f, 12.756f, 12.756f);  // The earth's diameter is about 12,756 Km
-		unaEsfera->loadTexture("./textures/mario.png");
-		g_EarthMaterial.Apply();
-		unaEsfera->draw();
-	glPopMatrix();
-
-	// Moon
-	glPushMatrix();
-		glRotatef(g_fRotate2, 0.0f, 0.0f, -1.0f);// Rotate the moon around it's axis
-		glTranslatef(50.0f, 0.0f, 0.0f); // Translate the moon away from the earth
-		glScalef(3.476f, 3.476f, 3.476f);
-		unCubo->loadTexture("./textures/grunge.jpg");
-		g_MoonMaterial.Apply();
-		unaEsfera->draw();
-	glPopMatrix();
 }

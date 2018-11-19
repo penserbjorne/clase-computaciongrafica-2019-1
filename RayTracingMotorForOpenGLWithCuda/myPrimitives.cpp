@@ -57,6 +57,10 @@ my3dObjectBase::my3dObjectBase(){
 	this->_sides = 0;
 	this->_scale = 0;
 	this->_transparency = 0;
+
+	// Create VBO's ID
+	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
 }
 
 my3dObjectBase::~my3dObjectBase(){
@@ -67,6 +71,9 @@ my3dObjectBase::~my3dObjectBase(){
 	if (this->_g_uiVerticesVBO != 0) {
 		glDeleteBuffersARB(1, &this->_g_uiVerticesVBO);
 		this->_g_uiVerticesVBO = 0;
+	}
+	if (this->_textureObject != 0) {
+		glDeleteTextures(1, &this->_textureObject);
 	}
 }
 
@@ -116,31 +123,48 @@ myMaterial my3dObjectBase::getMaterial(){
 	return this->_material;
 }
 
-bool my3dObjectBase::loadTexture(std::string pathToTexture) {
-	if (!this->_textureObject) {
-		this->_textureObject = SOIL_load_OGL_texture(pathToTexture.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-		if (this->_textureObject) {
-			std::cout << "Se cargo la textura " << pathToTexture.c_str()  << ""<< std::endl;
-		} else {
-			std::cout << "No se cargo la textura " << pathToTexture.c_str() << "" << std::endl;
-		}
-	}
-	if (this->_textureObject) {
-		glBindTexture(GL_TEXTURE_2D, this->_textureObject);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+bool my3dObjectBase::loadTexture(std::string pathToTexture){
+	unsigned char* image = SOIL_load_image(pathToTexture.c_str(), &this->_textureWidth, &this->_textureHeight, NULL, SOIL_LOAD_RGBA);
+	
+	glGenTextures(1, &this->_textureObject);
+	glBindTexture(GL_TEXTURE_2D, this->_textureObject);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+	if (image) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->_textureWidth,
+			this->_textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		std::cout << "Se cargo la textura " << pathToTexture.c_str() << "" << std::endl;
+	} else {
+		std::cout << "No se cargo la textura " << pathToTexture.c_str() << "" << std::endl;
 		glBindTexture(GL_TEXTURE_2D, 0);
-		return true;
+		SOIL_free_image_data(image);
+		return false;
 	}
-	return false;
+
+	glActiveTexture(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	SOIL_free_image_data(image);
+
+	return true;
 }
 
-bool my3dObjectBase::unloadTexture(){
-	this->_textureObject = 0;
-	return this->_textureObject;
+bool my3dObjectBase::bindTexture(){
+	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, this->_textureObject);
+	return true;
+}
+
+bool my3dObjectBase::unbindTexture(){
+	glActiveTexture(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return true;
 }
 
 bool my3dObjectBase::setTypeOfTexture(EmyTypeOfTexture typeOfTexture){
@@ -241,10 +265,6 @@ myCube::myCube(){
 
 	this->_g_Indices = _tmp_g_Indices;
 	*/
-
-	// Create VBO's ID
-	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
-	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
 	this->_drawMode = GL_QUADS;
 }
 
@@ -346,8 +366,6 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	};
 
 	// Create VBO's ID's
-	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
-	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
 	glGenBuffersARB(1, &(this->_g_uiIndicesVBO_Top));
 	glGenBuffersARB(1, &(this->_g_uiIndicesVBO_Bottom));
 }
@@ -466,9 +484,6 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 	}
 
 	this->_drawMode = GL_QUAD_STRIP;
-	// Create VBO's ID's
-	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
-	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
 }
 
 mySphere::~mySphere(){
@@ -571,8 +586,6 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_sizeIndex_Top_Bottom = index2;
 
 	// Create VBO's ID's
-	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
-	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
 	glGenBuffersARB(1, &(this->_g_uiIndicesVBO_Top));
 	glGenBuffersARB(1, &(this->_g_uiIndicesVBO_Bottom));
 }
@@ -676,10 +689,6 @@ myGrid::myGrid(GLfloat sizeCell, GLfloat numCells) {
 	}
 	this->_sizeVertex = index;
 	this->_sizeIndex = index;
-
-	// Create VBO's ID's
-	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
-	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
 }
 
 myGrid::~myGrid()
