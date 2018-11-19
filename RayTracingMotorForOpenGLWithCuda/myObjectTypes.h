@@ -14,6 +14,7 @@
 #define MEMBER_OFFSET(s,m) ((char *)NULL + (offsetof(s,m)))
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
+// This values was calculated by the fly, but need to be recalculated in a good way ;@
 constexpr auto SIZEVERTEXCUBE = 8;
 constexpr auto SIZEINDEXCUBE = 24;
 
@@ -25,54 +26,20 @@ constexpr auto SIZEVERTEXSPHERE = 882;
 constexpr auto SIZEVERTEXPRISM = 722;
 constexpr auto SIZEVERTEXPRISM_TOP_BOTTOM = 360;
 
-// Struct to define vector type objects for 2D and 3D space
-struct float2{
-	float2(GLfloat _x = 0.0f, GLfloat _y = 0.0f) : x(_x), y(_y) {}
-
-	GLfloat x;
-	GLfloat y;
-};
-
-struct float3{
-	float3(GLfloat _x = 0.0f, GLfloat _y = 0.0f, GLfloat _z = 0.0f) : x(_x), y(_y), z(_z) {}
-
-	GLfloat x;
-	GLfloat y;
-	GLfloat z;
-};
-
-struct float4 {
-	float4(GLfloat _x = 0.0f, GLfloat _y = 0.0f, GLfloat _z = 0.0f, GLfloat _w = 0.0f) : x(_x), y(_y), z(_z), w(_w) {}
-
-	GLfloat x;
-	GLfloat y;
-	GLfloat z;
-	GLfloat w;
-};
-
-struct color4 {
-	color4(GLfloat _r = 0.0f, GLfloat _g = 0.0f, GLfloat _b = 0.0f, GLfloat _a = 0.0f) : r(_r), g(_g), b(_b), a(_a) {}
-
-	GLfloat r;
-	GLfloat g;
-	GLfloat b;
-	GLfloat a;
-};
-
 // Vertex with a color for the primitives to use with VBO
 struct VertexXYZColor{
-	float3 m_Pos;
-	float3 m_Color;
+	glm::vec3 m_Pos;
+	glm::vec3 m_Color;
 };
 
 struct Light
 {
 	Light(GLenum lightID = GL_LIGHT0
-		, color4 ambient = color4(1.0, 1.0, 1.0, 1.0)
-		, color4 diffuse = color4(.3, .3, .3, 1.0)
-		, color4 specular = color4(1.0, 1.0, 1.0, 1.0)
-		, float4 position = float4(0.0, 0.0, 1.0, 0.0)
-		, float3 spotDirection = float3(0.0, 0.0, 1.0)
+		, glm::vec4 ambient = glm::vec4(1.0, 1.0, 1.0, 1.0)
+		, glm::vec4 diffuse = glm::vec4(.3, .3, .3, 1.0)
+		, glm::vec4 specular = glm::vec4(1.0, 1.0, 1.0, 1.0)
+		, glm::vec4 position = glm::vec4(0.0, 0.0, 1.0, 0.0)
+		, glm::vec3 spotDirection = glm::vec3(0.0, 0.0, 1.0)
 		, float  spotExponent = 0.0
 		, float  spotCutoff = 180.0f
 		, float  constantAttenuation = 1.0
@@ -112,12 +79,12 @@ struct Light
 	}
 
 	GLenum m_LightID;
-	color4 m_Ambient;
-	color4 m_Diffuse;
-	color4 m_Specular;
+	glm::vec4 m_Ambient;
+	glm::vec4 m_Diffuse;
+	glm::vec4 m_Specular;
 
-	float4 m_Position;
-	float3 m_SpotDirection;
+	glm::vec4 m_Position;
+	glm::vec3 m_SpotDirection;
 	float  m_SpotExponent;
 	float  m_SpotCutoff;
 	float  m_ConstantAttenuation;
@@ -127,10 +94,10 @@ struct Light
 
 struct Material
 {
-	Material(color4 ambient = color4(0.2, 0.2, 0.2, 1.0)
-		, color4 diffuse = color4(0.8, 0.8, 0.8, 1.0)
-		, color4 specular = color4(0.0, 0.0, 0.0, 1.0)
-		, color4 emission = color4(0.0, 0.0, 0.0, 1.0)
+	Material(glm::vec4 ambient = glm::vec4(0.2, 0.2, 0.2, 1.0)
+		, glm::vec4 diffuse = glm::vec4(0.8, 0.8, 0.8, 1.0)
+		, glm::vec4 specular = glm::vec4(0.0, 0.0, 0.0, 1.0)
+		, glm::vec4 emission = glm::vec4(0.0, 0.0, 0.0, 1.0)
 		, float shininess = 0)
 		: m_Ambient(ambient)
 		, m_Diffuse(diffuse)
@@ -148,10 +115,10 @@ struct Material
 		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m_Shininess);
 	}
 
-	color4 m_Ambient;
-	color4 m_Diffuse;
-	color4 m_Specular;
-	color4 m_Emission;
+	glm::vec4 m_Ambient;
+	glm::vec4 m_Diffuse;
+	glm::vec4 m_Specular;
+	glm::vec4 m_Emission;
 	float  m_Shininess;
 
 };
@@ -200,11 +167,11 @@ public:
 
 	virtual bool draw() { return false; };
 	bool setPosition(GLfloat x, GLfloat y, GLfloat z);
-	float3 getPosition();
+	glm::vec3 getPosition();
 
 protected:
 	EmyObjectType _type;
-	float3 _position;
+	glm::vec3 _position;
 };
 
 class mySpotlight : public myBaseObject{
@@ -290,14 +257,14 @@ public:
 private:
 	// Define the 8 vertices of a unit cube
 	VertexXYZColor _g_Vertices[SIZEVERTEXCUBE] = {
-		{ float3(1,  1,  1), float3(1, 1, 1) }, // 0
-		{ float3(-1,  1,  1), float3(0, 1, 1) }, // 1
-		{ float3(-1, -1,  1), float3(0, 0, 1) }, // 2
-		{ float3(1, -1,  1), float3(1, 0, 1) }, // 3
-		{ float3(1, -1, -1), float3(1, 0, 0) }, // 4
-		{ float3(-1, -1, -1), float3(0, 0, 0) }, // 5
-		{ float3(-1,  1, -1), float3(0, 1, 0) }, // 6
-		{ float3(1,  1, -1), float3(1, 1, 0) }, // 7
+		{ glm::vec3(1,  1,  1), glm::vec3(1, 1, 1) }, // 0
+		{ glm::vec3(-1,  1,  1), glm::vec3(0, 1, 1) }, // 1
+		{ glm::vec3(-1, -1,  1), glm::vec3(0, 0, 1) }, // 2
+		{ glm::vec3(1, -1,  1), glm::vec3(1, 0, 1) }, // 3
+		{ glm::vec3(1, -1, -1), glm::vec3(1, 0, 0) }, // 4
+		{ glm::vec3(-1, -1, -1), glm::vec3(0, 0, 0) }, // 5
+		{ glm::vec3(-1,  1, -1), glm::vec3(0, 1, 0) }, // 6
+		{ glm::vec3(1,  1, -1), glm::vec3(1, 1, 0) }, // 7
 	};
 
 	// Define the vertex indices for the cube.
@@ -387,19 +354,6 @@ public:
 
 private:
 	myCube _cubeBase;
-};
-
-class myCamera : public my3dObjectBase
-{
-public:
-	myCamera();
-	~myCamera();
-
-	bool setLookAt(GLfloat x, GLfloat y, GLfloat z);
-	float3 getLookAt();
-
-private:
-	float3 _lookAt;
 };
 
 class myRaytrace

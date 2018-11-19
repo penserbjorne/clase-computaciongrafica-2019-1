@@ -68,7 +68,7 @@ void DisplayGL(){
 	glTranslatef(0, 0, 0);
 
 	unCilindro->draw();
-	//RenderScene();
+	RenderScene();
 	//RenderScene1();
 
 	// Render Stuff
@@ -224,12 +224,12 @@ void ReshapeGL(int w, int h){
 	glutPostRedisplay();
 }
 
-Light g_SunLight(GL_LIGHT0, color4(0, 0, 0, 1), color4(1, 1, 1, 1), color4(1, 1, 1, 1), float4(0, 0, 0, 1));
+Light g_SunLight(GL_LIGHT0, glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1), glm::vec4(0, 0, 0, 1));
 
 // Material properties
-Material g_SunMaterial(color4(0, 0, 0, 1), color4(1, 1, 1, 1), color4(1, 1, 1, 1));
-Material g_EarthMaterial(color4(0.2, 0.2, 0.2, 1.0), color4(1, 1, 1, 1), color4(1, 1, 1, 1), color4(0, 0, 0, 1), 50);
-Material g_MoonMaterial(color4(0.1, 0.1, 0.1, 1.0), color4(1, 1, 1, 1), color4(0.2, 0.2, 0.2, 1), color4(0, 0, 0, 1), 10);
+Material g_SunMaterial(glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1));
+Material g_EarthMaterial(glm::vec4(0.2, 0.2, 0.2, 1.0), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1), glm::vec4(0, 0, 0, 1), 50);
+Material g_MoonMaterial(glm::vec4(0.1, 0.1, 0.1, 1.0), glm::vec4(1, 1, 1, 1), glm::vec4(0.2, 0.2, 0.2, 1), glm::vec4(0, 0, 0, 1), 10);
 
 // Setup the OpenGL and GLUt cotnext
 void InitGL(int argc, char* argv[]){

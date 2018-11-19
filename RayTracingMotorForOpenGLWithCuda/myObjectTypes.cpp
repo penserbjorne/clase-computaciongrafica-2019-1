@@ -20,7 +20,7 @@ bool myBaseObject::setPosition(GLfloat x, GLfloat y, GLfloat z){
 	return true;
 }
 
-float3 myBaseObject::getPosition(){
+glm::vec3 myBaseObject::getPosition(){
 	return this->_position;
 }
 
@@ -237,16 +237,16 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 		this->_g_Indices[index] = index;
 		this->_g_IndicesT[index2] = index;
 		this->_g_Vertices[index] = {
-			float3(x, y, this->_height), // Coord
-			float3(x, y, this->_height) // Color
+			glm::vec3(x, y, this->_height), // Coord
+			glm::vec3(x, y, this->_height) // Color
 		};
 		index++;
 
 		this->_g_Indices[index] = index;
 		this->_g_IndicesB[index2] = index;
 		this->_g_Vertices[index] = {
-			float3(x, y, 0.0f), // Coord
-			float3(x, y, 0.0f) // Position
+			glm::vec3(x, y, 0.0f), // Coord
+			glm::vec3(x, y, 0.0f) // Position
 		};
 		index++;
 
@@ -257,16 +257,16 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_g_Indices[index] = index;
 	this->_g_IndicesT[index2] = index;
 	this->_g_Vertices[index] = {
-		float3(this->_radius, 0.0, this->_height), // Coord
-		float3(this->_radius, 0.0, this->_height) // Position
+		glm::vec3(this->_radius, 0.0, this->_height), // Coord
+		glm::vec3(this->_radius, 0.0, this->_height) // Position
 	};
 	index++;
 
 	this->_g_Indices[index] = index;
 	this->_g_IndicesB[index2] = index;
 	this->_g_Vertices[index] = {
-		float3(this->_radius, 0.0, 0.0), // Coord
-		float3(this->_radius, 0.0, 0.0) // Position
+		glm::vec3(this->_radius, 0.0, 0.0), // Coord
+		glm::vec3(this->_radius, 0.0, 0.0) // Position
 	};
 
 	// Create VBO's ID's
@@ -372,14 +372,14 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 			y = sin(lng);
 			this->_g_Indices[index] = index;
 			this->_g_Vertices[index] = {
-				float3(x * zr0, y * zr0, z0), // Coord
-				float3(x * zr0, y * zr0, z0) // Position
+				glm::vec3(x * zr0, y * zr0, z0), // Coord
+				glm::vec3(x * zr0, y * zr0, z0) // Position
 			};
 			index++;
 			this->_g_Indices[index] = index;
 			this->_g_Vertices[index] = {
-				float3(x * zr1, y * zr1, z1), // Coord
-				float3(x * zr1, y * zr1, z1) // Position
+				glm::vec3(x * zr1, y * zr1, z1), // Coord
+				glm::vec3(x * zr1, y * zr1, z1) // Position
 			};
 			index++;
 		}
@@ -454,16 +454,16 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 		this->_g_Indices[index] = index;
 		this->_g_IndicesT[index2] = index;
 		this->_g_Vertices[index] = {
-			float3(x, y, this->_height), // Coord
-			float3(x, y, this->_height) // Color
+			glm::vec3(x, y, this->_height), // Coord
+			glm::vec3(x, y, this->_height) // Color
 		};
 		index++;
 
 		this->_g_Indices[index] = index;
 		this->_g_IndicesB[index2] = index;
 		this->_g_Vertices[index] = {
-			float3(x, y, 0.0f), // Coord
-			float3(x, y, 0.0f) // Position
+			glm::vec3(x, y, 0.0f), // Coord
+			glm::vec3(x, y, 0.0f) // Position
 		};
 
 		angle += angle_stepsize;
@@ -471,16 +471,16 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_g_Indices[index] = index;
 	this->_g_IndicesT[index2] = index;
 	this->_g_Vertices[index] = {
-		float3(this->_radius, 0.0, this->_height), // Coord
-		float3(this->_radius, 0.0, this->_height) // Position
+		glm::vec3(this->_radius, 0.0, this->_height), // Coord
+		glm::vec3(this->_radius, 0.0, this->_height) // Position
 	};
 	index++;
 
 	this->_g_Indices[index] = index;
 	this->_g_IndicesB[index2] = index;
 	this->_g_Vertices[index] = {
-		float3(this->_radius, 0.0, 0.0), // Coord
-		float3(this->_radius, 0.0, 0.0) // Position
+		glm::vec3(this->_radius, 0.0, 0.0), // Coord
+		glm::vec3(this->_radius, 0.0, 0.0) // Position
 	};
 	index++;
 	index2++;
@@ -574,26 +574,6 @@ bool myPlane::draw(){
 		this->_cubeBase.draw();
 	glPopMatrix();
 	return true;
-}
-
-// myCamera class definitions
-
-myCamera::myCamera(){
-	this->_type = EmyObjectType::motCamera;
-}
-
-myCamera::~myCamera(){
-}
-
-bool myCamera::setLookAt(GLfloat x, GLfloat y, GLfloat z){
-	this->_lookAt.x = x;
-	this->_lookAt.y = y;
-	this->_lookAt.z = z;
-	return true;
-}
-
-float3 myCamera::getLookAt(){
-	return this->_lookAt;
 }
 
 // myRaytrace class definitions
