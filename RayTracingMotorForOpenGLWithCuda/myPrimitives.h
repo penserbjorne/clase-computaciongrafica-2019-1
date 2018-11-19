@@ -165,7 +165,7 @@ public:
 
 	EmyObjectType getObjectType();
 
-	virtual bool draw() { return false; };
+	virtual bool draw() { std::cout << "This object does not know how to be drawed!" << std::endl;  return false; };
 	bool setPosition(GLfloat x, GLfloat y, GLfloat z);
 	glm::vec3 getPosition();
 
@@ -199,6 +199,8 @@ class my3dObjectBase : public myBaseObject{
 public:
 	my3dObjectBase();
 	~my3dObjectBase();
+
+	//bool draw();
 
 	bool setMaterial(struct myMaterial material);
 	struct myMaterial getMaterial();
@@ -238,12 +240,16 @@ protected:
 	GLint _sides;
 	GLfloat _scale;
 
+	// Data vertex and index
+	VertexXYZColor _g_Vertices;
+	GLuint _g_Indices;
+	GLsizei _sizeVertex;
+	GLsizei _sizeIndex;
+
 	// IDs for the buffers
 	GLuint _g_uiVerticesVBO = 0;
 	GLuint _g_uiIndicesVBO = 0;
-
-	GLsizei _sizeVertex;
-	GLsizei _sizeIndex;
+	GLenum _drawMode;
 
 	GLuint _textureObject;
 };
@@ -305,7 +311,6 @@ class mySphere : public my3dObjectBase{
 public:
 	mySphere(GLfloat radius, GLfloat lats, GLfloat longs);
 	~mySphere();
-
 	bool draw();
 
 private:
