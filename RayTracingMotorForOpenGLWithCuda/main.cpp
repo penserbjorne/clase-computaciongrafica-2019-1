@@ -11,6 +11,7 @@
 
 // My unhappy Code >;v
 #include "myObjectTypes.h"
+#include "myCameraFPS.h"
 
 // GL variables to use with GLUT
 int g_iWindowWidth = 512;
@@ -29,6 +30,10 @@ std::clock_t g_CurrentTicks;
 float deltaTicks, fDeltaTime;
 
 // Test
+myCameraFPS camara;
+float lastX = 0.0, lastY = 0.0;
+float cameraSteps = 5.0f;
+
 myCube* unCubo;
 myCylinder* unCilindro;
 mySphere* unaEsfera;
@@ -45,6 +50,7 @@ void InitGL(int argc, char* argv[]);
 void DisplayGL();	//	Render function for GLUT
 void IdleGL();	//	Background processing - Update methods
 void KeyboardGL(unsigned char c, int x, int y);
+void SpecialFunc(int key, int x, int y);
 void MouseGL(int button, int state, int x, int y);
 void MotionGL(int x, int y);	//	Invoked when the mouse moves within the window while one or more mouse buttons are pressed.
 void PassiveMotionGL(int x, int y);		//	Invoked when the mouse moves within the window while no one button is pressed.
@@ -54,10 +60,18 @@ void Cleanup(int exitCode, bool bExit = true);
 // Drawer!
 void DisplayGL(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
+	glMatrixMode(GL_MODELVIEW);	// Switch to modelview matrix mode
 
-	RenderScene();
-	RenderScene1();
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	camara.setViewMatrix();
+	glTranslatef(0, 0, 0);
+
+	unCilindro->draw();
+	//RenderScene();
+	//RenderScene1();
 
 	// Render Stuff
 	glutSwapBuffers();
@@ -93,22 +107,22 @@ void KeyboardGL(unsigned char c, int x, int y){
 	switch (c){
 		case 'w':
 		case 'W': {
-			std::cout << "Adelante" << std::endl;
+			camara.ProcessKeyboard(Camera_Movement::C_FORWARD, fDeltaTime * cameraSteps);
 		}
 		break;
 		case 's':
 		case 'S':{
-			std::cout << "Atras" << std::endl;
+			camara.ProcessKeyboard(Camera_Movement::C_BACKWARD, fDeltaTime * cameraSteps);
 		}
 		break;
 		case 'd':
 		case 'D': {
-			std::cout << "Derecha" << std::endl;
+			camara.ProcessKeyboard(Camera_Movement::C_RIGHT, fDeltaTime * cameraSteps);
 		}
 		break;
 		case 'a':
 		case 'A': {
-			std::cout << "Izquierda" << std::endl;
+			camara.ProcessKeyboard(Camera_Movement::C_LEFT, fDeltaTime * cameraSteps);
 		}
 		break;
 		case 'f':
@@ -140,16 +154,43 @@ void KeyboardGL(unsigned char c, int x, int y){
 	//glutPostRedisplay();
 }
 
+void SpecialFunc(int key, int x, int y) {
+	switch (key) {
+	case GLUT_KEY_UP:
+		camara.ProcessKeyboard(Camera_Movement::C_FORWARD, fDeltaTime * cameraSteps);
+		break;
+	case GLUT_KEY_DOWN:
+		camara.ProcessKeyboard(Camera_Movement::C_BACKWARD, fDeltaTime * cameraSteps);
+		break;
+	case GLUT_KEY_LEFT:
+		camara.ProcessKeyboard(Camera_Movement::C_LEFT, fDeltaTime * cameraSteps);
+		break;
+	case GLUT_KEY_RIGHT:
+		camara.ProcessKeyboard(Camera_Movement::C_RIGHT, fDeltaTime * cameraSteps);
+		break;
+	}
+}
+
 void MouseGL(int button, int state, int x, int y){
-	std::cout << "MouseFL; Boton:" << button << " X:"<< x << " Y:" << y << std::endl;
+	std::cout << "MouseGL; Boton:" << button << " X:"<< x << " Y:" << y << std::endl;
 }
 
 void MotionGL(int x, int y){
+	float xoffset = lastX - x;
+	float yoffset = lastY - y;
+
 	std::cout << "MotionGL; X:" << x << " Y:" << y << std::endl;
+
+	camara.ProcessMouseMovement(-xoffset, yoffset, true);
+	lastX = x;
+	lastY = y;
 }
 
 void PassiveMotionGL(int x, int y){
 	std::cout << "PassiveMotionGL; X:" << x << " Y:" << y << std::endl;
+
+	lastX = x;
+	lastY = y;
 }
 
 // Only destroy the render window we have created.
@@ -166,7 +207,6 @@ void Cleanup(int errorCode, bool bExit){
 }
 
 void ReshapeGL(int w, int h){
-
 	std::cout << "ReshapGL( " << w << ", " << h << " );" << std::endl;
 
 	if (h == 0){                                    // Prevent a divide-by-zero error
@@ -230,17 +270,12 @@ void InitGL(int argc, char* argv[]){
 	glutMotionFunc(MotionGL);
 	glutPassiveMotionFunc(PassiveMotionGL);
 	glutKeyboardFunc(KeyboardGL);
+	glutSpecialFunc(SpecialFunc);
 	glutReshapeFunc(ReshapeGL);
 
 	// Setup initial GL State
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black light
 	glClearDepth(1.0f);
-
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_DEPTH_TEST);
-
-	// Renormalize scaled normals so that lighting still works properly.
-	glEnable(GL_NORMALIZE);
 
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
 
@@ -310,7 +345,7 @@ void RenderScene1()
 void RenderScene(){
 
 	glMatrixMode(GL_MODELVIEW);
-	//glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
 	glLoadIdentity();
 
 	glTranslatef(-1.5f, 4.5f, -12.0f);

@@ -90,9 +90,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="myCameraFPS.cpp" />
     <ClCompile Include="myObjectTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="myCameraFPS.h" />
     <ClInclude Include="myObjectTypes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
