@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include <cstddef> // To use NULL
-#include <cmath>
 
 #define MEMBER_OFFSET(s,m) ((char *)NULL + (offsetof(s,m)))
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -146,6 +145,7 @@ enum EmyObjectType {
 	motPrism,
 	motOBJModel,
 	motPlane,
+	motGrid,
 	motCamera,
 	motRaytrace
 };
@@ -354,6 +354,22 @@ public:
 
 private:
 	myCube _cubeBase;
+};
+
+class myGrid : public my3dObjectBase
+{
+public:
+	myGrid(GLfloat sizeCell, GLfloat numCells);
+	~myGrid();
+	bool draw();
+	bool draw2();
+
+private:
+	VertexXYZColor* _g_Vertices;
+	GLuint* _g_Indices;
+
+	GLfloat _sizeCell;
+	GLfloat _numCells;
 };
 
 class myRaytrace

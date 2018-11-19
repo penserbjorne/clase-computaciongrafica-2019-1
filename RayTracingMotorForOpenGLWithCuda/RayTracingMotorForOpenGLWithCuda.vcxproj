@@ -91,11 +91,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myCameraFPS.cpp" />
-    <ClCompile Include="myObjectTypes.cpp" />
+    <ClCompile Include="myPrimitives.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myCameraFPS.h" />
-    <ClInclude Include="myObjectTypes.h" />
+    <ClInclude Include="myPrimitives.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

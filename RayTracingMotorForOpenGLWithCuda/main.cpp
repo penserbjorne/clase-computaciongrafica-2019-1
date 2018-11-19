@@ -1,7 +1,6 @@
 // Standar C++ libraries
 #define _USE_MATH_DEFINES
 #include <iostream>
-#include <cmath>
 #include <ctime>
 
 // Standar GL libraries
@@ -9,7 +8,7 @@
 #include <GL/glut.h>
 
 // My unhappy Code >;v
-#include "myObjectTypes.h"
+#include "myPrimitives.h"
 #include "myCameraFPS.h"
 
 // GL variables to use with GLUT
@@ -40,8 +39,26 @@ myPrism* unPrisma5;
 myPrism* unPrisma7;
 myPrism* unPrisma9;
 myPlane* unPlano;
+myGrid* unGrid;
 void RenderScene();
 void RenderScene1();
+
+GLfloat mat_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat mat_shininess[] = { 50.0 };
+
+/*This is for the properties of the point light*/
+GLfloat light_ambient[] = { 1.0, 0.0, 0.2, 1.0 };
+GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat light_position[] = { 0.0, 0.0, 1.5, 1.0 };
+
+/*This is for the properties of the spot light*/
+GLfloat light1_ambient[] = { 0.0, 1.0, 0.2, 1.0 };
+GLfloat light1_diffuse[] = { 0.0, 1.0, 1.0, 1.0 };
+GLfloat light1_specular[] = { 0.0, 1.0, 1.0, 1.0 };
+GLfloat light1_position[] = { -2.0, 0.0, -0.5, 1.0 };
+GLfloat spot_direction[] = { 1.0, 0.0, 0.0 };
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -58,22 +75,59 @@ void Cleanup(int exitCode, bool bExit = true);
 // Drawer!
 void DisplayGL(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
 	glMatrixMode(GL_MODELVIEW);	// Switch to modelview matrix mode
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	camara.setViewMatrix();
-	glTranslatef(0, 0, 0);
+	if (g_fRotate1 > 360.0)
+		g_fRotate1 -= 360;
 
-	unCilindro->draw();
-	RenderScene();
-	//RenderScene1();
+	g_fRotate1 += 0.1;
+
+	glPushMatrix();
+
+		camara.setViewMatrix();
+
+		// Cube to reference light0
+		glPushMatrix();
+			glRotatef((double)g_fRotate1, 1.0, 0.0, 0.0);
+			glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+			glTranslatef(light_position[0], light_position[1], light_position[2]);
+			glDisable(GL_LIGHTING);
+			glColor3f(0.0, 1.0, 1.0);
+			glutWireCube(0.1);
+			glEnable(GL_LIGHTING);
+		glPopMatrix();
+
+		// Cube to reference light1
+		glPushMatrix();
+			glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+			glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
+			glTranslatef(light1_position[0], light1_position[1], light1_position[2]);
+			glDisable(GL_LIGHTING);
+			glColor3f(1.0, 1.0, 0.0);
+			glutWireCube(0.1);
+			glEnable(GL_LIGHTING);
+		glPopMatrix();
+
+		// Grid
+		glPushMatrix();
+			glTranslatef(0.0, -0.5, 0.0);
+			glRotatef(-90.0f, 1.0, 0.0, 0.0);
+			unGrid->draw2();
+		glPopMatrix();
+
+		glPushMatrix();
+			glTranslatef(0.0, 0.0, -0.5f);
+			glutSolidSphere(0.5, 20, 20);
+		glPopMatrix();
+
+		glPushMatrix();
+			glTranslatef(3.0, 0.0, -0.5f);
+			glutSolidSphere(0.5, 20, 20);
+		glPopMatrix();
+	glPopMatrix();
 
 	// Render Stuff
 	glutSwapBuffers();
-	glutPostRedisplay();
 }
 
 // To update the logic of our demo :D
@@ -123,14 +177,6 @@ void KeyboardGL(unsigned char c, int x, int y){
 			camara.processKeyboard(Camera_Movement::C_LEFT, fDeltaTime);
 		}
 		break;
-		case 'f':
-		case 'F':{
-			//std::cout << "Shade Model: GL_FLAT" << std::endl;
-			// Switch to flat shading model
-			//glShadeModel(GL_FLAT);
-			// Switch to smooth shading model
-			//glShadeModel(GL_SMOOTH);
-		}
 		break;
 		case 'r':
 		case 'R':{
@@ -148,8 +194,6 @@ void KeyboardGL(unsigned char c, int x, int y){
 		}
 		break;
 	}
-
-	//glutPostRedisplay();
 }
 
 void SpecialFunc(int key, int x, int y) {
@@ -235,7 +279,7 @@ Material g_MoonMaterial(glm::vec4(0.1, 0.1, 0.1, 1.0), glm::vec4(1, 1, 1, 1), gl
 void InitGL(int argc, char* argv[]){
 
 	std::cout << "Initialise OpenGL..." << std::endl;
-
+	// Window
 	glutInit(&argc, argv);
 	int iScreenWidth = glutGet(GLUT_SCREEN_WIDTH);
 	int iScreenHeight = glutGet(GLUT_SCREEN_HEIGHT);
@@ -271,15 +315,45 @@ void InitGL(int argc, char* argv[]){
 	glutSpecialFunc(SpecialFunc);
 	glutReshapeFunc(ReshapeGL);
 
-	// Setup initial GL State
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black light
-	glClearDepth(1.0f);
-
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
 
-	// Specify a global ambient
-	GLfloat globalAmbient[] = { 0.2, 0.2, 0.2, 1.0 };
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+	/*This is for spot light*/
+	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.5);
+	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.5);
+	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.2);
+
+	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45);
+	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+
+	glClearDepthf(1.0f);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glShadeModel(GL_SMOOTH);
+
+	/*This is for point light*/
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 2.0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);
+
+	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	unCubo = new myCube();
 	unCilindro = new myCylinder(1.0f, 1.0f);
@@ -289,6 +363,8 @@ void InitGL(int argc, char* argv[]){
 	unPrisma7 = new myPrism(1.0f, 1.0f, 7);
 	unPrisma9 = new myPrism(1.0f, 1.0f, 9);
 	unPlano = new myPlane();
+	unGrid = new myGrid(0.3f, 20.0);
+
 }
 
 int main(int argc, char* argv[]){

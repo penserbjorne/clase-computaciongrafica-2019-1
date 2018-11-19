@@ -1,9 +1,10 @@
-#include "myObjectTypes.h"
+#include "myPrimitives.h"
 
 // myBaseObject class definitions
 
 myBaseObject::myBaseObject(){
 	this->_type = EmyObjectType::motBase;
+	this->_position = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 myBaseObject::~myBaseObject(){
@@ -246,7 +247,7 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 		this->_g_IndicesB[index2] = index;
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, 0.0f), // Coord
-			glm::vec3(x, y, 0.0f) // Position
+			glm::vec3(x, y, 0.0f) // Color
 		};
 		index++;
 
@@ -258,7 +259,7 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_g_IndicesT[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, this->_height), // Coord
-		glm::vec3(this->_radius, 0.0, this->_height) // Position
+		glm::vec3(this->_radius, 0.0, this->_height) // Color
 	};
 	index++;
 
@@ -266,7 +267,7 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_g_IndicesB[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, 0.0), // Coord
-		glm::vec3(this->_radius, 0.0, 0.0) // Position
+		glm::vec3(this->_radius, 0.0, 0.0) // Color
 	};
 
 	// Create VBO's ID's
@@ -373,13 +374,13 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 			this->_g_Indices[index] = index;
 			this->_g_Vertices[index] = {
 				glm::vec3(x * zr0, y * zr0, z0), // Coord
-				glm::vec3(x * zr0, y * zr0, z0) // Position
+				glm::vec3(x * zr0, y * zr0, z0) // Color
 			};
 			index++;
 			this->_g_Indices[index] = index;
 			this->_g_Vertices[index] = {
 				glm::vec3(x * zr1, y * zr1, z1), // Coord
-				glm::vec3(x * zr1, y * zr1, z1) // Position
+				glm::vec3(x * zr1, y * zr1, z1) // Color
 			};
 			index++;
 		}
@@ -463,7 +464,7 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 		this->_g_IndicesB[index2] = index;
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, 0.0f), // Coord
-			glm::vec3(x, y, 0.0f) // Position
+			glm::vec3(x, y, 0.0f) // Color
 		};
 
 		angle += angle_stepsize;
@@ -472,7 +473,7 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_g_IndicesT[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, this->_height), // Coord
-		glm::vec3(this->_radius, 0.0, this->_height) // Position
+		glm::vec3(this->_radius, 0.0, this->_height) // Color
 	};
 	index++;
 
@@ -480,7 +481,7 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_g_IndicesB[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, 0.0), // Coord
-		glm::vec3(this->_radius, 0.0, 0.0) // Position
+		glm::vec3(this->_radius, 0.0, 0.0) // Color
 	};
 	index++;
 	index2++;
@@ -576,6 +577,82 @@ bool myPlane::draw(){
 	return true;
 }
 
+// myGrid class definitions
+
+myGrid::myGrid(GLfloat sizeCell, GLfloat numCells) {
+
+	this->_type = EmyObjectType::motGrid;
+	this->_sizeCell = sizeCell;
+	this->_numCells = numCells;
+
+	int size = ((this->_numCells) + 1) * 2;	// Because we are taking from -numCells to numCells
+
+	this->_g_Vertices = new VertexXYZColor[size];
+	this->_g_Indices = new GLuint[size];
+
+	GLuint index = 0;
+	for (int i = 0; i <= this->_numCells; i++) {
+
+	}
+	this->_sizeVertex = index;
+	this->_sizeIndex = index;
+
+	// Create VBO's ID's
+	glGenBuffersARB(1, &(this->_g_uiVerticesVBO));
+	glGenBuffersARB(1, &(this->_g_uiIndicesVBO));
+}
+
+myGrid::~myGrid()
+{
+}
+
+bool myGrid::draw(){
+	// Copy the vertex data to the VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(this->_g_Vertices) * this->_sizeVertex, this->_g_Vertices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+	// Copy the index data to the VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_Indices) * this->_sizeIndex, this->_g_Indices, GL_STATIC_DRAW_ARB);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+
+	// We need to enable the client stats for the vertex attributes we want 
+	// to render even if we are not using client-side vertex arrays.
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	// Bind the vertices's VBO
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
+	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
+	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+
+	// Bind the indices's VBO
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
+	glDrawElements(GL_LINES, this->_sizeIndex, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+	// Unbind buffers so client-side vertex arrays still work.
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+	// Disable the client side arrays again.
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	return true;
+}
+
+bool myGrid::draw2(){
+	glBegin(GL_LINES);
+	for (int i = -this->_numCells; i <= this->_numCells; i++) {
+		glVertex3f((float)i * this->_sizeCell, (float)this->_numCells * this->_sizeCell, 0.0f);
+		glVertex3f((float)i * this->_sizeCell, -(float)this->_numCells * this->_sizeCell, 0.0f);
+		glVertex3f((float)this->_numCells * this->_sizeCell, (float)i * this->_sizeCell, 0.0f);
+		glVertex3f(-(float)this->_numCells * this->_sizeCell, (float)i * this->_sizeCell, 0.0f);
+	}
+	glEnd();
+	return true;
+}
+
 // myRaytrace class definitions
 
 myRaytrace::myRaytrace(){
@@ -599,6 +676,6 @@ bool myRaytrace::setMethod(EtypeOfMethodForRayTrace method){
 	return true;
 }
 
-EtypeOfMethodForRayTrace myRaytrace::getTypeOfMethod(){
+EtypeOfMethodForRayTrace myRaytrace::getTypeOfMethod() {
 	return this->_method;
 }
