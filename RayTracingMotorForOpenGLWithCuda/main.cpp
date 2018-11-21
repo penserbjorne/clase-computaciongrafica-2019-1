@@ -198,14 +198,16 @@ void DisplayGL(){
 			glTranslatef(-1.0, 0.0, 5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto1->bindTexture();
-			glutSolidCube(1);
+			unCubo->draw();
+			//glutSolidCube(1);
 		glPopMatrix();
 
 		glPushMatrix();
 			glTranslatef(2.0, 0.0, 5.0f);
 			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto2->bindTexture();
-			glutSolidSphere(0.5, 20, 20);
+			unaEsfera->draw();
+			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
@@ -460,8 +462,8 @@ void InitGL(int argc, char* argv[]){
 	unPrisma5->loadTexture("./textures/seis.png");
 	unPrisma7->loadTexture("./textures/siete.png");
 	unPrisma9->loadTexture("./textures/uno.png");
-	unObjeto1->loadTexture("./textures/paper.jpg");
-	unObjeto2->loadTexture("./textures/mario.jpg");
+	unObjeto1->loadTexture("./textures/mario.png");
+	unObjeto2->loadTexture("./textures/paper.jpg");
 	unObjeto3->loadTexture("./textures/grunge.jpg");
 }
 

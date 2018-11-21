@@ -287,11 +287,13 @@ bool myCube::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
@@ -304,6 +306,7 @@ bool myCube::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	return true;
 }
@@ -321,48 +324,60 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_sizeIndex_Top_Bottom = SIZEVERTEXCYLINDER_TOP_BOTTOM;
 	this->_radius = radius;
 	this->_height = height;
+	float uSteep = 1.0 / (float)((float)SIZEVERTEXCYLINDER / 2.0);
+	float u = 0;
 
 	GLfloat x = 0.0f, y = 0.0f;
 	GLfloat angle = 0.0f, angle_stepsize = 0.1f;
 	int index = 0, index2 = 0;
 
 	while (angle < 2 * M_PI) {
+
 		x = this->_radius * cos(angle);
 		y = this->_radius * sin(angle);
 
+		// Top vertex
 		this->_g_Indices[index] = index;
 		this->_g_IndicesT[index2] = index;
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, this->_height), // Coord
-			glm::vec3(x, y, this->_height) // Color
+			glm::vec3(x, y, this->_height), // Color
+			glm::vec2(u,0)	// UV
 		};
 		index++;
 
+		// Bottom vertex
 		this->_g_Indices[index] = index;
 		this->_g_IndicesB[index2] = index;
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, 0.0f), // Coord
-			glm::vec3(x, y, 0.0f) // Color
+			glm::vec3(x, y, 0.0f), // Color
+			glm::vec2(u,1)	// UV
 		};
 		index++;
 
 		angle += angle_stepsize;
 		index2++;
+		u += uSteep;
 	}
 
+	// Top
 	this->_g_Indices[index] = index;
 	this->_g_IndicesT[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, this->_height), // Coord
-		glm::vec3(this->_radius, 0.0, this->_height) // Color
+		glm::vec3(this->_radius, 0.0, this->_height), // Color
+		glm::vec2(u,0)	// UV
 	};
 	index++;
 
+	// Bottom
 	this->_g_Indices[index] = index;
 	this->_g_IndicesB[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, 0.0), // Coord
-		glm::vec3(this->_radius, 0.0, 0.0) // Color
+		glm::vec3(this->_radius, 0.0, 0.0), // Color
+		glm::vec2(u,1)	// UV
 	};
 
 	// Create VBO's ID's
@@ -405,11 +420,13 @@ bool myCylinder::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
@@ -428,6 +445,7 @@ bool myCylinder::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	return true;
 }
@@ -455,8 +473,13 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 
 	double lng, x, y;
 
+	double uSteep, vSteep;
+	double u = 0, v = 0;
+
 	int i, j, index = 0;
 
+	uSteep = 1 / this->_longs;
+	vSteep = 1 / this->_lats;
 	for (i = 0; i <= this->_lats; i++) {
 		lat0 = M_PI * (-0.5 + (double)(i - 1) / this->_lats);
 		z0 = sin(lat0);
@@ -464,6 +487,7 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 		lat1 = M_PI * (-0.5 + (double)i / this->_lats);
 		z1 = sin(lat1);
 		zr1 = cos(lat1);
+		u = 0;
 		for (j = 0; j <= this->_longs; j++) {
 			lng = 2 * M_PI * (double)(j - 1) / this->_longs;
 			x = cos(lng);
@@ -471,16 +495,20 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 			this->_g_Indices[index] = index;
 			this->_g_Vertices[index] = {
 				glm::vec3(x * zr0, y * zr0, z0), // Coord
-				glm::vec3(x * zr0, y * zr0, z0) // Color
+				glm::vec3(x * zr0, y * zr0, z0), // Color
+				glm::vec2(u, v)	// UV
 			};
 			index++;
 			this->_g_Indices[index] = index;
 			this->_g_Vertices[index] = {
 				glm::vec3(x * zr1, y * zr1, z1), // Coord
-				glm::vec3(x * zr1, y * zr1, z1) // Color
+				glm::vec3(x * zr1, y * zr1, z1), // Color
+				glm::vec2(u, v)	// UV
 			};
 			index++;
+			u += uSteep;
 		}
+		v += vSteep;
 	}
 
 	this->_drawMode = GL_QUAD_STRIP;
@@ -505,11 +533,13 @@ bool mySphere::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
@@ -522,6 +552,8 @@ bool mySphere::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	return true;
 }
 
@@ -543,6 +575,10 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	int index = 0, index2 = 0;
 	angle_stepsize = 360 / this->_sides;
 
+	float u = 0;
+	float uSteep;
+	uSteep = 1.0f / (float)this->_sides;
+
 	for(index = 0, index2 = 0; index < (this->_sides*2); index++, index2++) {
 		x = this->_radius * cos((angle/180) * M_PI);
 		y = this->_radius * sin((angle / 180) * M_PI);
@@ -551,7 +587,8 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 		this->_g_IndicesT[index2] = index;
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, this->_height), // Coord
-			glm::vec3(x, y, this->_height) // Color
+			glm::vec3(x, y, this->_height), // Color
+			glm::vec2(u, 0)	// UV
 		};
 		index++;
 
@@ -559,16 +596,19 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 		this->_g_IndicesB[index2] = index;
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, 0.0f), // Coord
-			glm::vec3(x, y, 0.0f) // Color
+			glm::vec3(x, y, 0.0f), // Color
+			glm::vec2(u, 1)	// UV
 		};
 
 		angle += angle_stepsize;
+		u += uSteep;
 	}
 	this->_g_Indices[index] = index;
 	this->_g_IndicesT[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, this->_height), // Coord
-		glm::vec3(this->_radius, 0.0, this->_height) // Color
+		glm::vec3(this->_radius, 0.0, this->_height), // Color
+		glm::vec2(0, 0)	// UV
 	};
 	index++;
 
@@ -576,7 +616,8 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_g_IndicesB[index2] = index;
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, 0.0), // Coord
-		glm::vec3(this->_radius, 0.0, 0.0) // Color
+		glm::vec3(this->_radius, 0.0, 0.0), // Color
+		glm::vec2(1, 1)	// UV
 	};
 	index++;
 	index2++;
@@ -617,21 +658,23 @@ bool myPrism::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_2D_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
 	glDrawElements(GL_QUAD_STRIP, this->_sizeIndex, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO_Top);
-	glDrawElements(GL_POLYGON, this->_sizeIndex_Top_Bottom, GL_UNSIGNED_INT, BUFFER_OFFSET(1));
+	glDrawElements(GL_POLYGON, this->_sizeIndex_Top_Bottom, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO_Bottom);
-	glDrawElements(GL_POLYGON, this->_sizeIndex_Top_Bottom, GL_UNSIGNED_INT, BUFFER_OFFSET(2));
+	glDrawElements(GL_POLYGON, this->_sizeIndex_Top_Bottom, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 	// Unbind buffers so client-side vertex arrays still work.
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
@@ -640,6 +683,8 @@ bool myPrism::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_2D_ARRAY);
+
 	return true;
 }
 
