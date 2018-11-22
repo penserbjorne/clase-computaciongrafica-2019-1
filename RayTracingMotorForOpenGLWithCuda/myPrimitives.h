@@ -35,10 +35,10 @@ struct VertexXYZColor{
 struct Light
 {
 	Light(GLenum lightID = GL_LIGHT0
-		, glm::vec4 ambient = glm::vec4(1.0, 1.0, 1.0, 1.0)
-		, glm::vec4 diffuse = glm::vec4(.3, .3, .3, 1.0)
+		, glm::vec4 ambient = glm::vec4(1.0, 0.0, 0.2, 1.0)
+		, glm::vec4 diffuse = glm::vec4(1.0, 1.0, 1.0, 1.0)
 		, glm::vec4 specular = glm::vec4(1.0, 1.0, 1.0, 1.0)
-		, glm::vec4 position = glm::vec4(0.0, 0.0, 1.0, 0.0)
+		, glm::vec4 position = glm::vec4(0.0, 1.0, 0.0, 0.0)
 		, glm::vec3 spotDirection = glm::vec3(0.0, 0.0, 1.0)
 		, float  spotExponent = 0.0
 		, float  spotCutoff = 180.0f
@@ -61,11 +61,11 @@ struct Light
 	void Activate()
 	{
 		glEnable(m_LightID);
-		glLightfv(m_LightID, GL_AMBIENT, &(m_Ambient.r));
-		glLightfv(m_LightID, GL_DIFFUSE, &(m_Diffuse.r));
-		glLightfv(m_LightID, GL_SPECULAR, &(m_Specular.r));
-		glLightfv(m_LightID, GL_POSITION, &(m_Position.x));
-		glLightfv(m_LightID, GL_SPOT_DIRECTION, &(m_SpotDirection.x));
+		glLightfv(m_LightID, GL_AMBIENT, &(m_Ambient[0]));
+		glLightfv(m_LightID, GL_DIFFUSE, &(m_Diffuse[0]));
+		glLightfv(m_LightID, GL_SPECULAR, &(m_Specular[0]));
+		glLightfv(m_LightID, GL_POSITION, &(m_Position[0]));
+		glLightfv(m_LightID, GL_SPOT_DIRECTION, &(m_SpotDirection[0]));
 		glLightf(m_LightID, GL_SPOT_EXPONENT, m_SpotExponent);
 		glLightf(m_LightID, GL_SPOT_CUTOFF, m_SpotCutoff);
 		glLightf(m_LightID, GL_CONSTANT_ATTENUATION, m_ConstantAttenuation);
@@ -108,10 +108,10 @@ struct Material
 
 	void Apply()
 	{
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, &(m_Ambient.r));
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, &(m_Diffuse.r));
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m_Specular.r));
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, &(m_Emission.r));
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, &(m_Ambient[0]));
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, &(m_Diffuse[0]));
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m_Specular[0]));
+		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, &(m_Emission[0]));
 		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m_Shininess);
 	}
 

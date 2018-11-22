@@ -57,10 +57,19 @@ GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat mat_shininess[] = { 50.0 };
 
 /*This is for the properties of the point light*/
-GLfloat light_ambient[] = { 1.0, 0.0, 0.2, 1.0 };
-GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light_position[] = { 0.0, 0.0, 1.5, 1.0 };
+Light pointLight(
+	GL_LIGHT0, // Light
+	glm::vec4(0.0, 0.0, 0.0, 1.0), // ambient
+	glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
+	glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
+	glm::vec4(0.0, 0.0, 1.5, 1.0), // position
+	glm::vec4(), //spotPosition = 0
+	0.0, // spotExponent
+	360.0, // spotCutoff
+	1.5, // constantAttenuation
+	0.5, // linearAttenuation
+	0.2	// quadraticAttenuation
+);
 
 /*This is for the properties of the spot light*/
 GLfloat light1_ambient[] = { 0.0, 1.0, 0.2, 1.0 };
@@ -86,9 +95,6 @@ void DisplayGL(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);	// Switch to modelview matrix mode
 
-	if (g_fRotate1 > 360.0)
-		g_fRotate1 -= 360;
-
 	//g_fRotate1 += 0.1;
 
 	glPushMatrix();
@@ -98,12 +104,12 @@ void DisplayGL(){
 		// Cube to reference light0
 		glPushMatrix();
 			glRotatef((double)g_fRotate1, 1.0, 0.0, 0.0);
-			glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-			glTranslatef(light_position[0], light_position[1], light_position[2]);
-			//glDisable(GL_LIGHTING);
-			//glColor3f(1.0, 1.0, 1.0);
+			glTranslatef(pointLight.m_Position[0], pointLight.m_Position[1], pointLight.m_Position[2]);
+			pointLight.Activate();
+			glDisable(GL_LIGHTING);
+			glColor3f(0.0, 0.0, 1.0);
 			glutWireCube(0.1);
-			//glEnable(GL_LIGHTING);
+			glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		// Cube to reference light1
@@ -111,83 +117,82 @@ void DisplayGL(){
 			glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
 			glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
 			glTranslatef(light1_position[0], light1_position[1], light1_position[2]);
-			//glDisable(GL_LIGHTING);
-			//glColor3f(1.0, 1.0, 1.0);
+			glDisable(GL_LIGHTING);
+			glColor3f(0.0, 1.0, 0.0);
 			glutWireCube(0.1);
-			//glEnable(GL_LIGHTING);
+			glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		// Grid
 		glPushMatrix();
 			glTranslatef(0.0, -0.5, 0.0);
 			glRotatef(-90.0f, 1.0, 0.0, 0.0);
-			//glDisable(GL_LIGHTING);
+			glDisable(GL_LIGHTING);
+			glColor3f(1.0, 0.0, 0.0);
 			unGrid->draw2();
-			//glEnable(GL_LIGHTING);
+			glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		glPushMatrix();
-			//glDisable(GL_LIGHTING);
-			glTranslatef(-10.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(-10.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unCubo->bindTexture();
 			//g_EarthMaterial.Apply();
 			unCubo->draw();
 			//glutSolidSphere(0.5, 20, 20);
-			//glEnable(GL_LIGHTING);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(-7.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(-7.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unaEsfera->bindTexture();
 			unaEsfera->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(-4.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(-4.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unCilindro->bindTexture();
 			unCilindro->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(-1.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(-1.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPlano->bindTexture();
 			unPlano->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(2.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(2.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma3->bindTexture();
 			unPrisma3->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(5.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(5.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma5->bindTexture();
 			unPrisma5->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(8.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(8.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma7->bindTexture();
 			unPrisma7->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(11.0, 0.0, -5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(11.0, 0.0, -3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma9->bindTexture();
 			unPrisma9->draw();
 			//glutSolidSphere(0.5, 20, 20);
@@ -195,24 +200,24 @@ void DisplayGL(){
 
 		// Otros ;v
 			glPushMatrix();
-			glTranslatef(-1.0, 0.0, 5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(-1.0, 0.0, 3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto1->bindTexture();
 			unCubo->draw();
 			//glutSolidCube(1);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(2.0, 0.0, 5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(2.0, 0.0, 3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto2->bindTexture();
 			unaEsfera->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
 
 		glPushMatrix();
-			glTranslatef(5.0, 0.0, 5.0f);
-			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glTranslatef(5.0, 0.0, 3.0f);
+			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto3->bindTexture();
 			glutSolidTeapot(1);
 		glPopMatrix();
@@ -407,10 +412,14 @@ void InitGL(int argc, char* argv[]){
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	/*This is for point light*/
+	/*glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 2.0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
 
 	/*This is for spot light*/
 	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
@@ -425,18 +434,17 @@ void InitGL(int argc, char* argv[]){
 	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
 	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
 
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClearDepthf(1.0f);
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glShadeModel(GL_SMOOTH);
 
-	/*This is for point light*/
-	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 2.0);
-	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0);
-	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);
+	// Specify a global ambient
+	GLfloat globalAmbient[] = { 0.1, 0.1, 0.1, 1.0 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
+	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
@@ -457,7 +465,7 @@ void InitGL(int argc, char* argv[]){
 	unCubo->loadTexture("./textures/uno.png");
 	unaEsfera->loadTexture("./textures/dos.png");
 	unCilindro->loadTexture("./textures/tres.png");
-	unPlano->loadTexture("./textures/cuatro.png");
+	unPlano->loadTexture("./textures/mario.png");
 	unPrisma3->loadTexture("./textures/cinco.png");
 	unPrisma5->loadTexture("./textures/seis.png");
 	unPrisma7->loadTexture("./textures/siete.png");
