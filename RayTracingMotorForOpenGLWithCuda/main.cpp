@@ -59,10 +59,10 @@ GLfloat mat_shininess[] = { 50.0 };
 /*This is for the properties of the point light*/
 Light pointLight(
 	GL_LIGHT0, // Light
-	glm::vec4(0.0, 0.0, 0.0, 1.0), // ambient
+	glm::vec4(0.0, 0.0, 1.0, 1.0), // ambient
 	glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
 	glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
-	glm::vec4(0.0, 0.0, 1.5, 1.0), // position
+	glm::vec4(0.0, 1.0, 0.0, 1.0), // position
 	glm::vec4(), //spotPosition = 0
 	0.0, // spotExponent
 	180.0, // spotCutoff
@@ -71,12 +71,22 @@ Light pointLight(
 	0.2	// quadraticAttenuation
 );
 
-/*This is for the properties of the spot light*/
-GLfloat light1_ambient[] = { 0.0, 1.0, 0.2, 1.0 };
-GLfloat light1_diffuse[] = { 0.0, 1.0, 1.0, 1.0 };
-GLfloat light1_specular[] = { 0.0, 1.0, 1.0, 1.0 };
-GLfloat light1_position[] = { -2.0, 0.0, -0.5, 1.0 };
-GLfloat spot_direction[] = { 1.0, 0.0, 0.0 };
+/*This is for the properties of the point light*/
+Light spotLight(
+	GL_LIGHT1, // Light
+	glm::vec4(0.0, 1.0, 0.0, 1.0), // ambient
+	glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
+	glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
+	//glm::vec4(-2.0, 0.0, -0.5, 1.0), // position
+	//glm::vec4(1.0, 0.0, 0.0, 1.0), //spotPosition = 0
+	glm::vec4(-1.0, 1.0, -3.0, 1.0), // position
+	glm::vec4(-1.0, 0.0, -3.0, 1.0), //spotPosition = 0
+	2.0, // spotExponent
+	45.0, // spotCutoff
+	1.5, // constantAttenuation
+	0.5, // linearAttenuation
+	0.2	// quadraticAttenuation
+);
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -101,24 +111,32 @@ void DisplayGL(){
 
 		camara.setViewMatrix();
 
+		pointLight.Activate();
 		// Cube to reference light0
 		glPushMatrix();
 			glRotatef((double)g_fRotate1, 1.0, 0.0, 0.0);
 			glTranslatef(pointLight.m_Position[0], pointLight.m_Position[1], pointLight.m_Position[2]);
-			pointLight.Activate();
 			glDisable(GL_LIGHTING);
 			glColor3f(0.0, 0.0, 1.0);
 			glutWireCube(0.1);
 			glEnable(GL_LIGHTING);
 		glPopMatrix();
 
+		spotLight.Activate();
 		// Cube to reference light1
 		glPushMatrix();
-			glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-			glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
-			glTranslatef(light1_position[0], light1_position[1], light1_position[2]);
+			glTranslatef(spotLight.m_Position[0], spotLight.m_Position[1], spotLight.m_Position[2]);
 			glDisable(GL_LIGHTING);
 			glColor3f(0.0, 1.0, 0.0);
+			glutWireCube(0.1);
+			glEnable(GL_LIGHTING);
+		glPopMatrix();
+
+		// Cube to reference light1
+		glPushMatrix();
+			glTranslatef(spotLight.m_SpotDirection[0], spotLight.m_SpotDirection[1], spotLight.m_SpotDirection[2]);
+			glDisable(GL_LIGHTING);
+			glColor3f(0.0, 1.0, 1.0);
 			glutWireCube(0.1);
 			glEnable(GL_LIGHTING);
 		glPopMatrix();
@@ -422,7 +440,7 @@ void InitGL(int argc, char* argv[]){
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
 
 	/*This is for spot light*/
-	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
+	/*glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
 	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
 	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
@@ -432,7 +450,7 @@ void InitGL(int argc, char* argv[]){
 
 	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45);
 	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
-	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);*/
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClearDepthf(1.0f);
