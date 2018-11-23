@@ -65,7 +65,7 @@ Light pointLight(
 	glm::vec4(0.0, 0.0, 1.5, 1.0), // position
 	glm::vec4(), //spotPosition = 0
 	0.0, // spotExponent
-	360.0, // spotCutoff
+	180.0, // spotCutoff
 	1.5, // constantAttenuation
 	0.5, // linearAttenuation
 	0.2	// quadraticAttenuation
@@ -442,12 +442,13 @@ void InitGL(int argc, char* argv[]){
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
+	//glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT1);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
+	glEnable(GL_LIGHT_MODEL_LOCAL_VIEWER);
 
 	unCubo = new myCube();
 	unCilindro = new myCylinder(1.0f, 1.0f);

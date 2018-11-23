@@ -77,43 +77,6 @@ my3dObjectBase::~my3dObjectBase(){
 	}
 }
 
-/*bool my3dObjectBase::draw(){
-	// Copy the vertex data to the VBO
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
-	//glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(this->_g_Vertices) * this->_sizeVertex, this->_g_Vertices, GL_STATIC_DRAW_ARB);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(VertexXYZColor) * this->_sizeVertex, this->_g_Vertices, GL_STATIC_DRAW_ARB);
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-
-	// Copy the index data to the VBO
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
-	//glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(this->_g_Indices) * this->_sizeIndex, this->_g_Indices, GL_STATIC_DRAW_ARB);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(GLuint) * this->_sizeIndex, this->_g_Indices, GL_STATIC_DRAW_ARB);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-
-	// We need to enable the client stats for the vertex attributes we want 
-	// to render even if we are not using client-side vertex arrays.
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-
-	// Bind the vertices's VBO
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
-	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
-	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
-
-	// Bind the indices's VBO
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
-	glDrawElements(this->_drawMode, this->_sizeIndex, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-
-	// Unbind buffers so client-side vertex arrays still work.
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-
-	// Disable the client side arrays again.
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	return true;
-}*/
-
 bool my3dObjectBase::setMaterial(myMaterial material){
 	this->_material = material;
 	return true;
@@ -237,34 +200,6 @@ myCube::myCube(){
 	
 	this->_sizeVertex = SIZEVERTEXCUBE;
 	this->_sizeIndex = SIZEINDEXCUBE;
-	/*this->_g_Vertices = new VertexXYZColor[SIZEVERTEXCUBE];
-	this->_g_Indices = new GLuint[SIZEINDEXCUBE];
-	
-	// Define the 8 vertices of a unit cube
-	VertexXYZColor _tmp_g_Vertices[SIZEVERTEXCUBE] = {
-		{ glm::vec3(1,  1,  1), glm::vec3(1, 1, 1) }, // 0
-		{ glm::vec3(-1,  1,  1), glm::vec3(0, 1, 1) }, // 1
-		{ glm::vec3(-1, -1,  1), glm::vec3(0, 0, 1) }, // 2
-		{ glm::vec3(1, -1,  1), glm::vec3(1, 0, 1) }, // 3
-		{ glm::vec3(1, -1, -1), glm::vec3(1, 0, 0) }, // 4
-		{ glm::vec3(-1, -1, -1), glm::vec3(0, 0, 0) }, // 5
-		{ glm::vec3(-1,  1, -1), glm::vec3(0, 1, 0) }, // 6
-		{ glm::vec3(1,  1, -1), glm::vec3(1, 1, 0) }, // 7
-	};
-	this->_g_Vertices = _tmp_g_Vertices;
-
-	// Define the vertex indices for the cube.
-	GLuint _tmp_g_Indices[SIZEINDEXCUBE] = {
-		0, 1, 2, 3,                 // Front face
-		7, 4, 5, 6,                 // Back face
-		6, 5, 2, 1,                 // Left face
-		7, 0, 3, 4,                 // Right face
-		7, 6, 1, 0,                 // Top face
-		3, 2, 5, 4,                 // Bottom face
-	};
-
-	this->_g_Indices = _tmp_g_Indices;
-	*/
 	this->_drawMode = GL_QUADS;
 }
 
@@ -287,12 +222,14 @@ bool myCube::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glNormalPointer(GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Normal));
 	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
@@ -306,6 +243,7 @@ bool myCube::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	return true;
@@ -342,6 +280,7 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, this->_height), // Coord
 			glm::vec3(x, y, this->_height), // Color
+			glm::normalize(glm::vec3(x, y, this->_height)), // Normal
 			glm::vec2(u,0)	// UV
 		};
 		index++;
@@ -352,6 +291,7 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, 0.0f), // Coord
 			glm::vec3(x, y, 0.0f), // Color
+			glm::normalize(glm::vec3(x, y, 0.0f)), // Normal
 			glm::vec2(u,1)	// UV
 		};
 		index++;
@@ -367,6 +307,7 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, this->_height), // Coord
 		glm::vec3(this->_radius, 0.0, this->_height), // Color
+		glm::normalize(glm::vec3(this->_radius, 0.0, this->_height)), // Normal
 		glm::vec2(u,0)	// UV
 	};
 	index++;
@@ -377,6 +318,7 @@ myCylinder::myCylinder(GLfloat radius, GLfloat height){
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, 0.0), // Coord
 		glm::vec3(this->_radius, 0.0, 0.0), // Color
+		glm::normalize(glm::vec3(this->_radius, 0.0, 0.0)), // Normal
 		glm::vec2(u,1)	// UV
 	};
 
@@ -420,12 +362,14 @@ bool myCylinder::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glNormalPointer(GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Normal));
 	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
@@ -445,6 +389,7 @@ bool myCylinder::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	return true;
@@ -496,6 +441,7 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 			this->_g_Vertices[index] = {
 				glm::vec3(x * zr0, y * zr0, z0), // Coord
 				glm::vec3(x * zr0, y * zr0, z0), // Color
+				glm::normalize(glm::vec3(x * zr0, y * zr0, z0)), // Normal
 				glm::vec2(u, v)	// UV
 			};
 			index++;
@@ -503,6 +449,7 @@ mySphere::mySphere(GLfloat radius, GLfloat lats, GLfloat longs){
 			this->_g_Vertices[index] = {
 				glm::vec3(x * zr1, y * zr1, z1), // Coord
 				glm::vec3(x * zr1, y * zr1, z1), // Color
+				glm::normalize(glm::vec3(x * zr1, y * zr1, z1)), // Normal
 				glm::vec2(u, v)	// UV
 			};
 			index++;
@@ -533,12 +480,14 @@ bool mySphere::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glNormalPointer(GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Normal));
 	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
@@ -552,6 +501,7 @@ bool mySphere::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	return true;
@@ -588,6 +538,7 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, this->_height), // Coord
 			glm::vec3(x, y, this->_height), // Color
+			glm::normalize(glm::vec3(x, y, this->_height)), // Normal
 			glm::vec2(u, 0)	// UV
 		};
 		index++;
@@ -597,6 +548,7 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 		this->_g_Vertices[index] = {
 			glm::vec3(x, y, 0.0f), // Coord
 			glm::vec3(x, y, 0.0f), // Color
+			glm::normalize(glm::vec3(x, y, 0.0f)), // Normal
 			glm::vec2(u, 1)	// UV
 		};
 
@@ -608,6 +560,7 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, this->_height), // Coord
 		glm::vec3(this->_radius, 0.0, this->_height), // Color
+		glm::normalize(glm::vec3(this->_radius, 0.0, this->_height)), // Normal
 		glm::vec2(0, 0)	// UV
 	};
 	index++;
@@ -617,6 +570,7 @@ myPrism::myPrism(GLfloat radius, GLfloat height, GLint sides){
 	this->_g_Vertices[index] = {
 		glm::vec3(this->_radius, 0.0, 0.0), // Coord
 		glm::vec3(this->_radius, 0.0, 0.0), // Color
+		glm::normalize(glm::vec3(this->_radius, 0.0, 0.0)), // Normal
 		glm::vec2(1, 1)	// UV
 	};
 	index++;
@@ -658,12 +612,14 @@ bool myPrism::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_2D_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glNormalPointer(GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Normal));
 	glTexCoordPointer(2, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_TextureCoord));
 
 	// Bind the indices's VBO
@@ -683,6 +639,7 @@ bool myPrism::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_2D_ARRAY);
 
 	return true;
@@ -755,11 +712,13 @@ bool myGrid::draw(){
 	// to render even if we are not using client-side vertex arrays.
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 
 	// Bind the vertices's VBO
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, this->_g_uiVerticesVBO);
 	glVertexPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Pos));
 	glColorPointer(3, GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Color));
+	glNormalPointer(GL_FLOAT, sizeof(VertexXYZColor), MEMBER_OFFSET(VertexXYZColor, m_Normal));
 
 	// Bind the indices's VBO
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, this->_g_uiIndicesVBO);
@@ -772,6 +731,8 @@ bool myGrid::draw(){
 	// Disable the client side arrays again.
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	
 	return true;
 }
 

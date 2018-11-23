@@ -29,6 +29,7 @@ constexpr auto SIZEVERTEXPRISM_TOP_BOTTOM = 360;
 struct VertexXYZColor{
 	glm::vec3 m_Pos;
 	glm::vec3 m_Color;
+	glm::vec3 m_Normal;
 	glm::vec2 m_TextureCoord;
 };
 
@@ -39,7 +40,7 @@ struct Light
 		, glm::vec4 diffuse = glm::vec4(1.0, 1.0, 1.0, 1.0)
 		, glm::vec4 specular = glm::vec4(1.0, 1.0, 1.0, 1.0)
 		, glm::vec4 position = glm::vec4(0.0, 1.0, 0.0, 0.0)
-		, glm::vec3 spotDirection = glm::vec3(0.0, 0.0, 1.0)
+		, glm::vec3 spotDirection = glm::vec3(0.0, 0.0, 0.0)
 		, float  spotExponent = 0.0
 		, float  spotCutoff = 180.0f
 		, float  constantAttenuation = 1.0
@@ -270,41 +271,49 @@ private:
 		{//1
 			glm::vec3(1,  1,  1), // Coord
 			glm::vec3(1, 1, 1),	// Color
+			glm::normalize(glm::vec3(1,  1,  1)), // Normal
 			glm::vec2(1,0)	// UV
 		},
 		{//2
 			glm::vec3(-1,  1,  1), // Coord
 			glm::vec3(0, 1, 1), // Color
+			glm::normalize(glm::vec3(-1, 1, 1)), // Normal
 			glm::vec2(0,0)	// UV
 		},
 		{//3
 			glm::vec3(-1, -1,  1), // Coord
 			glm::vec3(0, 0, 1),	// Color
+			glm::normalize(glm::vec3(-1, -1, 1)), // Normal
 			glm::vec2(0,1)
 		},
 		{//4
 			glm::vec3(1, -1,  1), // Coord
 			glm::vec3(1, 0, 1),	// Color
+			glm::normalize(glm::vec3(1,  -1,  1)), // Normal
 			glm::vec2(1,1) // UV
 		},
 		{//5
 			glm::vec3(1, -1, -1), // Coord
 			glm::vec3(1, 0, 0),	// Color
+			glm::normalize(glm::vec3(1,  -1,  -1)), // Normal
 			glm::vec2(0,0)	// UV
 		},
 		{//6
 			glm::vec3(-1, -1, -1), // Coord
 			glm::vec3(0, 0, 0),	// Color
+			glm::normalize(glm::vec3(-1,  -1,  -1)), // Normal
 			glm::vec2(0,0)	// UV
 		},
 		{//7
 			glm::vec3(-1,  1, -1), // Coord
 			glm::vec3(0, 1, 0),	// Color
+			glm::normalize(glm::vec3(-1,1,-1)), // Normal
 			glm::vec2(0,0)	// UV
 		},
 		{//8
 			glm::vec3(1,  1, -1), // Coord
 			glm::vec3(1, 1, 0),	// Color
+			glm::normalize(glm::vec3(1,1,-1)), // Normal
 			glm::vec2(0,0)	// UV
 		},
 	};
