@@ -45,7 +45,7 @@ my3dObjectBase* unObjeto2;
 my3dObjectBase* unObjeto3;
 
 // Sun light
-Light g_SunLight(GL_LIGHT0, glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1), glm::vec4(0, 0, 0, 1));
+//Light g_SunLight(GL_LIGHT0, glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1), glm::vec4(0, 0, 0, 1));
 
 // Material properties
 Material g_SunMaterial(glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1));
@@ -57,36 +57,10 @@ GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat mat_shininess[] = { 50.0 };
 
 /*This is for the properties of the point light*/
-Light pointLight(
-	GL_LIGHT0, // Light
-	glm::vec4(0.0, 0.0, 1.0, 1.0), // ambient
-	glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
-	glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
-	glm::vec4(0.0, 1.0, 0.0, 1.0), // position
-	glm::vec4(), //spotPosition = 0
-	0.0, // spotExponent
-	180.0, // spotCutoff
-	1.5, // constantAttenuation
-	0.5, // linearAttenuation
-	0.2	// quadraticAttenuation
-);
+myLight* pointLight;
 
 /*This is for the properties of the point light*/
-Light spotLight(
-	GL_LIGHT1, // Light
-	glm::vec4(0.0, 1.0, 0.0, 1.0), // ambient
-	glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
-	glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
-	//glm::vec4(-2.0, 0.0, -0.5, 1.0), // position
-	//glm::vec4(1.0, 0.0, 0.0, 1.0), //spotPosition = 0
-	glm::vec4(-1.0, 1.0, -3.0, 1.0), // position
-	glm::vec4(-1.0, 0.0, -3.0, 1.0), //spotPosition = 0
-	2.0, // spotExponent
-	45.0, // spotCutoff
-	1.5, // constantAttenuation
-	0.5, // linearAttenuation
-	0.2	// quadraticAttenuation
-);
+myLight* spotLight;
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -111,21 +85,21 @@ void DisplayGL(){
 
 		camara.setViewMatrix();
 
-		pointLight.Activate();
+		pointLight->activate();
 		// Cube to reference light0
 		glPushMatrix();
 			glRotatef((double)g_fRotate1, 1.0, 0.0, 0.0);
-			glTranslatef(pointLight.m_Position[0], pointLight.m_Position[1], pointLight.m_Position[2]);
+			glTranslatef(pointLight->position[0], pointLight->position[1], pointLight->position[2]);
 			glDisable(GL_LIGHTING);
 			glColor3f(0.0, 0.0, 1.0);
 			glutWireCube(0.1);
 			glEnable(GL_LIGHTING);
 		glPopMatrix();
 
-		spotLight.Activate();
+		spotLight->activate();
 		// Cube to reference light1
 		glPushMatrix();
-			glTranslatef(spotLight.m_Position[0], spotLight.m_Position[1], spotLight.m_Position[2]);
+			glTranslatef(spotLight->position[0], spotLight->position[1], spotLight->position[2]);
 			glDisable(GL_LIGHTING);
 			glColor3f(0.0, 1.0, 0.0);
 			glutWireCube(0.1);
@@ -134,7 +108,7 @@ void DisplayGL(){
 
 		// Cube to reference light1
 		glPushMatrix();
-			glTranslatef(spotLight.m_SpotDirection[0], spotLight.m_SpotDirection[1], spotLight.m_SpotDirection[2]);
+			glTranslatef(spotLight->spotDirection[0], spotLight->spotDirection[1], spotLight->spotDirection[2]);
 			glDisable(GL_LIGHTING);
 			glColor3f(0.0, 1.0, 1.0);
 			glutWireCube(0.1);
@@ -430,28 +404,6 @@ void InitGL(int argc, char* argv[]){
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-	/*This is for point light*/
-	/*glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 2.0);
-	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0);
-	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
-
-	/*This is for spot light*/
-	/*glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.5);
-	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.5);
-	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.2);
-
-	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45);
-	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
-	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);*/
-
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClearDepthf(1.0f);
 
@@ -468,6 +420,32 @@ void InitGL(int argc, char* argv[]){
 	glEnable(GL_NORMALIZE); // Renormalize scaled normals so that lighting still works properly.
 	glEnable(GL_LIGHT_MODEL_LOCAL_VIEWER);
 
+	pointLight = new myLight(
+		GL_LIGHT0, // Light
+		glm::vec4(0.0, 0.0, 1.0, 1.0), // ambient
+		glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
+		glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
+		glm::vec4(0.0, 1.0, 0.0, 1.0), // position
+		glm::vec4(), //spotPosition = 0
+		0.0, // spotExponent
+		180.0, // spotCutoff
+		1.5, // constantAttenuation
+		0.5, // linearAttenuation
+		0.2	// quadraticAttenuation
+		);
+	spotLight = new myLight(
+		GL_LIGHT1, // Light
+		glm::vec4(0.0, 1.0, 0.0, 1.0), // ambient
+		glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
+		glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
+		glm::vec4(-1.0, 1.0, -3.0, 1.0), // position
+		glm::vec4(-1.0, 0.0, -3.0, 1.0), //spotPosition = 0
+		2.0, // spotExponent
+		45.0, // spotCutoff
+		1.5, // constantAttenuation
+		0.5, // linearAttenuation
+		0.2	// quadraticAttenuation
+	);
 	unCubo = new myCube();
 	unCilindro = new myCylinder(1.0f, 1.0f);
 	unaEsfera = new mySphere(1.0f, 20.0f, 20.0f);

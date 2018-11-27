@@ -9,9 +9,9 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
 
 - [ ] (5%) Leer de un archivo la configuración de su mundo, el formato que se debe manejar son archivos YAML (Obligatorio).
 - [ ] Se podrá configurar los siguientes elementos.
-  - [ ] (10%) Luces: Se pondrá configurar los diferentes tipos de luces.
-    - [ ] Spot
-    - [ ] Point
+  - [x] (10%) Luces: Se pondrá configurar los diferentes tipos de luces.
+    - [x] Spot
+    - [x] Point
   - [ ] (10%) Modelos: Los modelos geométricos que se debe implementar son:
     - [x] Cubos
     - [x] Cilindros

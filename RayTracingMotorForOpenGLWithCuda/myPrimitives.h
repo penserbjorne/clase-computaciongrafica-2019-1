@@ -33,66 +33,6 @@ struct VertexXYZColor{
 	glm::vec2 m_TextureCoord;
 };
 
-struct Light
-{
-	Light(GLenum lightID = GL_LIGHT0
-		, glm::vec4 ambient = glm::vec4(1.0, 0.0, 0.2, 1.0)
-		, glm::vec4 diffuse = glm::vec4(1.0, 1.0, 1.0, 1.0)
-		, glm::vec4 specular = glm::vec4(1.0, 1.0, 1.0, 1.0)
-		, glm::vec4 position = glm::vec4(0.0, 1.0, 0.0, 0.0)
-		, glm::vec3 spotDirection = glm::vec3(0.0, 0.0, 0.0)
-		, float  spotExponent = 0.0
-		, float  spotCutoff = 180.0f
-		, float  constantAttenuation = 1.0
-		, float  linearAttenuation = 0.0
-		, float  quadraticAttenuation = 0.0)
-		: m_LightID(lightID)
-		, m_Ambient(ambient)
-		, m_Diffuse(diffuse)
-		, m_Specular(specular)
-		, m_Position(position)
-		, m_SpotDirection(spotDirection)
-		, m_SpotExponent(spotExponent)
-		, m_SpotCutoff(spotCutoff)
-		, m_ConstantAttenuation(constantAttenuation)
-		, m_LinearAttenuation(linearAttenuation)
-		, m_QuadraticAttenuation(quadraticAttenuation)
-	{}
-
-	void Activate()
-	{
-		glEnable(m_LightID);
-		glLightfv(m_LightID, GL_AMBIENT, &(m_Ambient[0]));
-		glLightfv(m_LightID, GL_DIFFUSE, &(m_Diffuse[0]));
-		glLightfv(m_LightID, GL_SPECULAR, &(m_Specular[0]));
-		glLightfv(m_LightID, GL_POSITION, &(m_Position[0]));
-		glLightfv(m_LightID, GL_SPOT_DIRECTION, &(m_SpotDirection[0]));
-		glLightf(m_LightID, GL_SPOT_EXPONENT, m_SpotExponent);
-		glLightf(m_LightID, GL_SPOT_CUTOFF, m_SpotCutoff);
-		glLightf(m_LightID, GL_CONSTANT_ATTENUATION, m_ConstantAttenuation);
-		glLightf(m_LightID, GL_LINEAR_ATTENUATION, m_LinearAttenuation);
-		glLightf(m_LightID, GL_QUADRATIC_ATTENUATION, m_QuadraticAttenuation);
-	}
-
-	void Deactivate()
-	{
-		glDisable(m_LightID);
-	}
-
-	GLenum m_LightID;
-	glm::vec4 m_Ambient;
-	glm::vec4 m_Diffuse;
-	glm::vec4 m_Specular;
-
-	glm::vec4 m_Position;
-	glm::vec3 m_SpotDirection;
-	float  m_SpotExponent;
-	float  m_SpotCutoff;
-	float  m_ConstantAttenuation;
-	float  m_LinearAttenuation;
-	float  m_QuadraticAttenuation;
-};
-
 struct Material
 {
 	Material(glm::vec4 ambient = glm::vec4(0.2, 0.2, 0.2, 1.0)
@@ -121,7 +61,6 @@ struct Material
 	glm::vec4 m_Specular;
 	glm::vec4 m_Emission;
 	float  m_Shininess;
-
 };
 
 struct myMaterial {
@@ -176,24 +115,38 @@ protected:
 	glm::vec3 _position;
 };
 
-class mySpotlight : public myBaseObject{
+class myLight : public myBaseObject{
 
 public:
-	mySpotlight();
-	~mySpotlight();
+	myLight(GLenum LightID,
+		glm::vec4 ambient,
+		glm::vec4 diffuse,
+		glm::vec4 specular,
+		glm::vec4 position,
+		glm::vec3 spotDirection,
+		float  spotExponent,
+		float  spotCutoff,
+		float  constantAttenuation,
+		float  linearAttenuation,
+		float  quadraticAttenuation);
+	~myLight();
+	
+	void activate();
+	void deactivate();
+	glm::vec4 position;
+	glm::vec3 spotDirection;
 
 private:
+	GLenum _lightID;
+	glm::vec4 _ambient;
+	glm::vec4 _diffuse;
+	glm::vec4 _specular;
 
-};
-
-class myPointlight : public myBaseObject{
-
-public:
-	myPointlight();
-	~myPointlight();
-
-private:
-
+	float  _spotExponent;
+	float  _spotCutoff;
+	float  _constantAttenuation;
+	float  _linearAttenuation;
+	float  _quadraticAttenuation;
 };
 
 class my3dObjectBase : public myBaseObject{

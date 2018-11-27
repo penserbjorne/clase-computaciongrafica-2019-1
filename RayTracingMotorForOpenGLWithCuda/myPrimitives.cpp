@@ -25,22 +25,43 @@ glm::vec3 myBaseObject::getPosition(){
 	return this->_position;
 }
 
-// mySpotlight class definitions
+// myLight
 
-mySpotlight::mySpotlight(){
-	this->_type = EmyObjectType::motSpotlight;
+myLight::myLight(GLenum lightID,
+	glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular,
+	glm::vec4 position, glm::vec3 spotDirection,
+	float spotExponent, float spotCutoff,
+	float constantAttenuation, float linearAttenuation, float quadraticAttenuation) {
+
+	this->_lightID = lightID;
+	this->_ambient = ambient;
+	this->_diffuse = diffuse;
+	this->_specular = specular;
+	this->position = position;
+	this->spotDirection = spotDirection;
+	this->_spotExponent = spotExponent;
+	this->_spotCutoff = spotCutoff;
+	this->_constantAttenuation = constantAttenuation;
+	this->_linearAttenuation = linearAttenuation;
+	this->_quadraticAttenuation = quadraticAttenuation;
 }
 
-mySpotlight::~mySpotlight(){
+void myLight::activate() {
+	glEnable(this->_lightID);
+	glLightfv(this->_lightID, GL_AMBIENT, &(this->_ambient[0]));
+	glLightfv(this->_lightID, GL_DIFFUSE, &(this->_diffuse[0]));
+	glLightfv(this->_lightID, GL_SPECULAR, &(this->_specular[0]));
+	glLightfv(this->_lightID, GL_POSITION, &(this->position[0]));
+	glLightfv(this->_lightID, GL_SPOT_DIRECTION, &(this->spotDirection[0]));
+	glLightf(this->_lightID, GL_SPOT_EXPONENT, this->_spotExponent);
+	glLightf(this->_lightID, GL_SPOT_CUTOFF, this->_spotCutoff);
+	glLightf(this->_lightID, GL_CONSTANT_ATTENUATION, this->_constantAttenuation);
+	glLightf(this->_lightID, GL_LINEAR_ATTENUATION, this->_linearAttenuation);
+	glLightf(this->_lightID, GL_QUADRATIC_ATTENUATION, this->_quadraticAttenuation);
 }
 
-// myPointlight class definitions
-
-myPointlight::myPointlight(){
-	this->_type = EmyObjectType::motPointlight;
-}
-
-myPointlight::~myPointlight(){
+void myLight::deactivate() {
+	glDisable(this->_lightID);
 }
 
 // my3dObjectBase class definitions
