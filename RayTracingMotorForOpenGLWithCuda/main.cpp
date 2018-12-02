@@ -113,7 +113,7 @@ void DisplayGL(){
 		
 		glPushMatrix();
 			glTranslatef(-10.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unCubo->bindTexture();
 			mat1->apply();
 			unCubo->draw();
@@ -122,7 +122,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(-7.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unaEsfera->bindTexture();
 			mat2->apply();
 			unaEsfera->draw();
@@ -131,7 +131,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(-4.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unCilindro->bindTexture();
 			mat3->apply();
 			unCilindro->draw();
@@ -140,7 +140,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(-1.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPlano->bindTexture();
 			mat1->apply();
 			unPlano->draw();
@@ -149,7 +149,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(2.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma3->bindTexture();
 			mat2->apply();
 			unPrisma3->draw();
@@ -158,7 +158,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(5.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma5->bindTexture();
 			mat3->apply();
 			unPrisma5->draw();
@@ -167,7 +167,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(8.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma7->bindTexture();
 			mat1->apply();
 			unPrisma7->draw();
@@ -176,7 +176,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(11.0, 0.0, -3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma9->bindTexture();
 			mat2->apply();
 			unPrisma9->draw();
@@ -186,7 +186,7 @@ void DisplayGL(){
 		// Otros ;v
 			glPushMatrix();
 			glTranslatef(-1.0, 0.0, 3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto1->bindTexture();
 			mat3->apply();
 			unCubo->draw();
@@ -195,7 +195,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(2.0, 0.0, 3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto2->bindTexture();
 			mat1->apply();
 			unaEsfera->draw();
@@ -204,7 +204,7 @@ void DisplayGL(){
 
 		glPushMatrix();
 			glTranslatef(5.0, 0.0, 3.0f);
-			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
+			glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto3->bindTexture();
 			mat2->apply();
 			glutSolidTeapot(1);

@@ -50,6 +50,7 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
 - [Texturing and Lighting in OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/texturing-and-lighting-in-opengl/)
 - [Using OpenGL Vertex Buffer Objects by Jeremiah van Oosten.](https://www.3dgep.com/using-opengl-vertex-buffer-objects/)
+- [OpenGL Vertex Buffer Object (VBO) by Song Ho Ahn (안성호)](https://www.songho.ca/opengl/gl_vbo.html)
 
 ## Posibles recursos para consultar
 

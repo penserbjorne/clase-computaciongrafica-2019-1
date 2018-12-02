@@ -33,12 +33,6 @@ struct VertexXYZColor{
 	glm::vec2 m_TextureCoord;
 };
 
-enum EmyTypeOfTexture {
-	// MyTypeOfTexture = mtot
-	mtotReflective = 0,
-	mtotRefractice
-};
-
 // Enum to clasify objects
 enum EmyObjectType {
 	// MyObjecttype = mot
@@ -74,7 +68,7 @@ public:
 
 	bool apply();
 
-//private:
+private:
 	glm::vec4 _ambient;
 	glm::vec4 _diffuse;
 	glm::vec4 _specular;
@@ -142,38 +136,15 @@ public:
 
 	//bool draw();
 
-	bool setMaterial(myMaterial material);
-	myMaterial getMaterial();
-
 	bool loadTexture(std::string pathToTexture);
 	bool bindTexture();
 	bool unbindTexture();
-
-	bool setTypeOfTexture(EmyTypeOfTexture typeOfTexture);
-	EmyTypeOfTexture getTypeOfTexture();
-
-	bool setTransparency(GLfloat transparency);
-	GLfloat getTransparency();
-
-	bool setRadius(GLfloat radius);
-	GLfloat getRadius();
-
-	bool setWidth(GLfloat width);
-	GLfloat getWidth();
-
-	bool setHeight(GLfloat height);
-	GLfloat getHeight();
-
-	bool setSides(GLint sides);
-	GLint getSides();
 
 	bool setScale(GLfloat scale);
 	GLfloat getScale();
 
 protected:
 	myMaterial _material;
-	EmyTypeOfTexture _typeOfTexture;
-	GLfloat _transparency;
 
 	GLfloat _radius;
 	GLfloat _width;
