@@ -19,7 +19,7 @@ Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
     - [x] Prismas
     - [ ] Modelos en formato OBJ
     - [x] Planos
-  - [ ] (10%) Se podrá colocar una textura a cada modelo, si el objeto es reflectivo o refractivo.
+  - [x] (10%) Se podrá colocar una textura a cada modelo, si el objeto es reflectivo o refractivo.
   - [ ] (10%) Múltiples cámaras.
     - [x] Manejar la cámara en primera persona y la cámara orbital (Arcball).
       - [x] Para ambas cámaras los movimientos de pitch y yaw realizarlos con el mouse.
@@ -48,16 +48,12 @@ Utilizar como ejemplo de parámetro el archivo [example-world.yaml](./example-wo
 ## Recursos consultados
 - [Repositorio de Computación Gráfica del profesor Ricardo Martell](https://github.com/rmartella/ComputacionGrafica)
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
+- [Texturing and Lighting in OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/texturing-and-lighting-in-opengl/)
 - [Using OpenGL Vertex Buffer Objects by Jeremiah van Oosten.](https://www.3dgep.com/using-opengl-vertex-buffer-objects/)
 
 ## Posibles recursos para consultar
 
-### OpenGL
-
-- [Texturing and Lighting in OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/texturing-and-lighting-in-opengl/)
-- [Loading and Animating MD5 Models with OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/loading-and-animating-md5-models-with-opengl/)
-
-#### GLSL y otras cosas ;@
+### GLSL y otras cosas ;@
 
 - [Introduction to OpenGL and GLSL by Jeremiah van Oosten.](https://www.3dgep.com/introduction-to-opengl-and-glsl/)
 - [Texturing and Lighting with OpenGL and GLSL by Jeremiah van Oosten.](https://www.3dgep.com/texturing-and-lighting-with-opengl-and-glsl/)

@@ -33,40 +33,6 @@ struct VertexXYZColor{
 	glm::vec2 m_TextureCoord;
 };
 
-struct Material
-{
-	Material(glm::vec4 ambient = glm::vec4(0.2, 0.2, 0.2, 1.0)
-		, glm::vec4 diffuse = glm::vec4(0.8, 0.8, 0.8, 1.0)
-		, glm::vec4 specular = glm::vec4(0.0, 0.0, 0.0, 1.0)
-		, glm::vec4 emission = glm::vec4(0.0, 0.0, 0.0, 1.0)
-		, float shininess = 0)
-		: m_Ambient(ambient)
-		, m_Diffuse(diffuse)
-		, m_Specular(specular)
-		, m_Emission(emission)
-		, m_Shininess(shininess)
-	{}
-
-	void Apply()
-	{
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, &(m_Ambient[0]));
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, &(m_Diffuse[0]));
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m_Specular[0]));
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, &(m_Emission[0]));
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m_Shininess);
-	}
-
-	glm::vec4 m_Ambient;
-	glm::vec4 m_Diffuse;
-	glm::vec4 m_Specular;
-	glm::vec4 m_Emission;
-	float  m_Shininess;
-};
-
-struct myMaterial {
-	// Pendiente de implementar y definir
-};
-
 enum EmyTypeOfTexture {
 	// MyTypeOfTexture = mtot
 	mtotReflective = 0,
@@ -95,6 +61,25 @@ enum EtypeOfMethodForRayTrace {
 	// TypeOfMethod = tom
 	tomForward = 0,
 	tomBackward
+};
+
+class myMaterial{
+public:
+	myMaterial() {};
+	myMaterial(
+		glm::vec4 ambient, glm::vec4 diffuse,
+		glm::vec4 specular, glm::vec4 emission,
+		float shininess);
+	~myMaterial() {};
+
+	bool apply();
+
+//private:
+	glm::vec4 _ambient;
+	glm::vec4 _diffuse;
+	glm::vec4 _specular;
+	glm::vec4 _emission;
+	float  _shininess;
 };
 
 // Base class for the 3D objects
@@ -157,8 +142,8 @@ public:
 
 	//bool draw();
 
-	bool setMaterial(struct myMaterial material);
-	struct myMaterial getMaterial();
+	bool setMaterial(myMaterial material);
+	myMaterial getMaterial();
 
 	bool loadTexture(std::string pathToTexture);
 	bool bindTexture();
@@ -186,7 +171,7 @@ public:
 	GLfloat getScale();
 
 protected:
-	struct myMaterial _material;
+	myMaterial _material;
 	EmyTypeOfTexture _typeOfTexture;
 	GLfloat _transparency;
 

@@ -12,8 +12,8 @@
 #include "myCameraFPS.h"
 
 // GL variables to use with GLUT
-int g_iWindowWidth = 512;
-int g_iWindowHeight = 512;
+int g_iWindowWidth = 800;
+int g_iWindowHeight = 640;
 int g_iGLUTWindowHandle = 0;
 int g_iErrorCode = 0;
 
@@ -31,36 +31,22 @@ float deltaTicks, fDeltaTime;
 myCameraFPS camara;
 float lastX = 0.0, lastY = 0.0;
 
-myCube* unCubo;
-myCylinder* unCilindro;
-mySphere* unaEsfera;
-myPrism* unPrisma3;
-myPrism* unPrisma5;
-myPrism* unPrisma7;
-myPrism* unPrisma9;
-myPlane* unPlano;
-myGrid* unGrid;
-my3dObjectBase* unObjeto1;
-my3dObjectBase* unObjeto2;
-my3dObjectBase* unObjeto3;
-
-// Sun light
-//Light g_SunLight(GL_LIGHT0, glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1), glm::vec4(0, 0, 0, 1));
-
-// Material properties
-Material g_SunMaterial(glm::vec4(0, 0, 0, 1), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1));
-Material g_EarthMaterial(glm::vec4(0.2, 0.2, 0.2, 1.0), glm::vec4(1, 1, 1, 1), glm::vec4(1, 1, 1, 1), glm::vec4(0, 0, 0, 1), 50);
-Material g_MoonMaterial(glm::vec4(0.1, 0.1, 0.1, 1.0), glm::vec4(1, 1, 1, 1), glm::vec4(0.2, 0.2, 0.2, 1), glm::vec4(0, 0, 0, 1), 10);
-
-GLfloat mat_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat mat_shininess[] = { 50.0 };
-
-/*This is for the properties of the point light*/
-myLight* pointLight;
-
-/*This is for the properties of the point light*/
-myLight* spotLight;
+myMaterial *matAmbient;
+myMaterial *mat1, *mat2, *mat3;
+myLight *pointLight;
+myLight *spotLight;
+myCube *unCubo;
+myCylinder *unCilindro;
+mySphere *unaEsfera;
+myPrism *unPrisma3;
+myPrism *unPrisma5;
+myPrism *unPrisma7;
+myPrism *unPrisma9;
+myPlane *unPlano;
+myGrid *unGrid;
+my3dObjectBase *unObjeto1;
+my3dObjectBase *unObjeto2;
+my3dObjectBase *unObjeto3;
 
 // OpenGL callback functions
 void InitGL(int argc, char* argv[]);
@@ -84,7 +70,7 @@ void DisplayGL(){
 	glPushMatrix();
 
 		camara.setViewMatrix();
-
+		
 		pointLight->activate();
 		// Cube to reference light0
 		glPushMatrix();
@@ -119,17 +105,17 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(0.0, -0.5, 0.0);
 			glRotatef(-90.0f, 1.0, 0.0, 0.0);
-			glDisable(GL_LIGHTING);
+			//glDisable(GL_LIGHTING);
 			glColor3f(1.0, 0.0, 0.0);
 			unGrid->draw2();
-			glEnable(GL_LIGHTING);
+			//glEnable(GL_LIGHTING);
 		glPopMatrix();
-
+		
 		glPushMatrix();
 			glTranslatef(-10.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unCubo->bindTexture();
-			//g_EarthMaterial.Apply();
+			mat1->apply();
 			unCubo->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -138,6 +124,7 @@ void DisplayGL(){
 			glTranslatef(-7.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unaEsfera->bindTexture();
+			mat2->apply();
 			unaEsfera->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -146,6 +133,7 @@ void DisplayGL(){
 			glTranslatef(-4.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unCilindro->bindTexture();
+			mat3->apply();
 			unCilindro->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -154,6 +142,7 @@ void DisplayGL(){
 			glTranslatef(-1.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPlano->bindTexture();
+			mat1->apply();
 			unPlano->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -162,6 +151,7 @@ void DisplayGL(){
 			glTranslatef(2.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma3->bindTexture();
+			mat2->apply();
 			unPrisma3->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -170,6 +160,7 @@ void DisplayGL(){
 			glTranslatef(5.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma5->bindTexture();
+			mat3->apply();
 			unPrisma5->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -178,6 +169,7 @@ void DisplayGL(){
 			glTranslatef(8.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma7->bindTexture();
+			mat1->apply();
 			unPrisma7->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -186,6 +178,7 @@ void DisplayGL(){
 			glTranslatef(11.0, 0.0, -3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unPrisma9->bindTexture();
+			mat2->apply();
 			unPrisma9->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -195,6 +188,7 @@ void DisplayGL(){
 			glTranslatef(-1.0, 0.0, 3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto1->bindTexture();
+			mat3->apply();
 			unCubo->draw();
 			//glutSolidCube(1);
 		glPopMatrix();
@@ -203,6 +197,7 @@ void DisplayGL(){
 			glTranslatef(2.0, 0.0, 3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto2->bindTexture();
+			mat1->apply();
 			unaEsfera->draw();
 			//glutSolidSphere(0.5, 20, 20);
 		glPopMatrix();
@@ -211,6 +206,7 @@ void DisplayGL(){
 			glTranslatef(5.0, 0.0, 3.0f);
 			//glRotatef(g_fRotate1, 1.0f, 1.0f, 1.0f);
 			unObjeto3->bindTexture();
+			mat2->apply();
 			glutSolidTeapot(1);
 		glPopMatrix();
 
@@ -400,20 +396,24 @@ void InitGL(int argc, char* argv[]){
 
 	std::cout << "Initialise OpenGL: Success!" << std::endl;
 
-	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClearDepthf(1.0f);
+
+	matAmbient = new myMaterial(
+		glm::vec4(1.0, 1.0, 1.0, 1.0 ), // ambient
+		glm::vec4(1.0, 1.0, 1.0, 1.0), // diffuse
+		glm::vec4(1.0, 1.0, 1.0, 1.0), // specular
+		glm::vec4(0.1, 0.1, 0.1, 1.0), // emission
+		1.0 // shininess
+	);
+
+	matAmbient->apply();
 
 	// Specify a global ambient
 	GLfloat globalAmbient[] = { 0.1, 0.1, 0.1, 1.0 };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
 	glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-	//glEnable(GL_LIGHT1);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -458,6 +458,28 @@ void InitGL(int argc, char* argv[]){
 	unObjeto1 = new my3dObjectBase();
 	unObjeto2 = new my3dObjectBase();
 	unObjeto3 = new my3dObjectBase();
+
+	mat1 = new myMaterial(
+		glm::vec4(0.5, 0.5, 0.5, 1), // ambient
+		glm::vec4(1, 1, 1, 1),	// diffuse
+		glm::vec4(1, 1, 1, 1),	// specular
+		glm::vec4(0.2, 0.2, 0.2, 1.0),	// emissive
+		10	// shininess
+	);
+	mat2 = new myMaterial(
+		glm::vec4(0.2, 0.2, 0.2, 1.0),	// ambient
+		glm::vec4(0.5, 0.5, 0.5, 1),	//diffuse
+		glm::vec4(1, 1, 1, 1),	// specular
+		glm::vec4(0, 0, 0, 1),	// emissive
+		50	// shininess
+	);
+	mat3 = new myMaterial(
+		glm::vec4(0.1, 0.1, 0.1, 1.0),	// ambient
+		glm::vec4(1, 1, 1, 1),	// diffuse
+		glm::vec4(0.2, 0.2, 0.2, 1),	// specular
+		glm::vec4(0, 0, 0, 1),	// emissive
+		30	// shininess
+	);
 
 	unCubo->loadTexture("./textures/uno.png");
 	unaEsfera->loadTexture("./textures/dos.png");

@@ -1,5 +1,30 @@
 #include "myPrimitives.h"
 
+// myMaterial class definitions
+
+myMaterial::myMaterial(
+	glm::vec4 ambient, glm::vec4 diffuse, 
+	glm::vec4 specular, glm::vec4 emission, 
+	float shininess){
+
+	this->_ambient = ambient;
+	this->_diffuse = diffuse;
+	this->_specular = specular;
+	this->_emission = emission;
+	this->_shininess = shininess;
+}
+
+bool myMaterial::apply(){
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, &(this->_ambient[0]));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, &(this->_diffuse[0]));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(this->_specular[0]));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, &(this->_emission[0]));
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, this->_shininess);
+	return true;
+}
+
+
+
 // myBaseObject class definitions
 
 myBaseObject::myBaseObject(){
