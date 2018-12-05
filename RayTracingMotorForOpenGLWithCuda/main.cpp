@@ -105,10 +105,10 @@ void DisplayGL(){
 		glPushMatrix();
 			glTranslatef(0.0, -0.5, 0.0);
 			glRotatef(-90.0f, 1.0, 0.0, 0.0);
-			//glDisable(GL_LIGHTING);
-			glColor3f(1.0, 0.0, 0.0);
+			glDisable(GL_LIGHTING);
+			glColor3f(0.3, 0.3, 0.3);
 			unGrid->draw2();
-			//glEnable(GL_LIGHTING);
+			glEnable(GL_LIGHTING);
 		glPopMatrix();
 		
 		glPushMatrix();
