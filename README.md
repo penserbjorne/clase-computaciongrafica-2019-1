@@ -7,7 +7,9 @@ date: 2018-12-05
 # Clase de Computación Gráfica 2019-1
 Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
 
-[Aquí el enlace a YouTube](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
+[Repositorio del proyecto: https://github.com/penserbjorne/clase-computaciongrafica-2019-1](https://github.com/penserbjorne/clase-computaciongrafica-2019-1)
+
+[Aquí el enlace a YouTube: https://youtu.be/y9eq8vUzcj0](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
 
 ## Objetivo y requerimientos del proyecto
 
@@ -120,7 +122,7 @@ Los movimientos de desplazamiento se pueden realizar con las teclas a, s, d, w  
 
 ![./img/img-09.png](./img/img-09.png)
 
-[Aquí el enlace a YouTube](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
+[Aquí el enlace a YouTube: https://youtu.be/y9eq8vUzcj0](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
 
 ### Pendientes a implementar (ToDo's)
 
