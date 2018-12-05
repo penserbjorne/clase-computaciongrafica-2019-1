@@ -7,7 +7,7 @@ date: 2018-12-05
 # Clase de Computación Gráfica 2019-1
 Proyecto final para la clase de Computación Gráfica, FI, UNAM, 2019-1
 
-Enlace a [YouTube](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
+[Aquí el enlace a YouTube](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
 
 ## Objetivo y requerimientos del proyecto
 
@@ -82,6 +82,7 @@ Los objetos se dibujan directamente desde el Vertex Buffer Object (VBO), teniend
 - Coordenadas UV
 
 A su vez las primitivas cuentan con funciones para cargar texturas:
+
 - **loadTexture** : Recibe como parámetro la ubicación de la textura.
 - **bindTexture** : Asocia y aplica la textura al modelo.
 - **unbindTexture** : Desasocia la textura del modelo.
@@ -91,6 +92,7 @@ Las texturas se cargan con el cargador de la biblioteca SOIL.
 Para los materiales se utiliza el método **apply** el cual aplica sobre el objeto que se va a dibujar el material.
 
 Para las luces se utilizan los métodos:
+
 - **activate** : El cual _enciende_ la luz.
 - **deactivate**: El cual _apaga_ la luz.
 
@@ -118,9 +120,10 @@ Los movimientos de desplazamiento se pueden realizar con las teclas a, s, d, w  
 
 ![./img/img-09.png](./img/img-09.png)
 
-Enlace a [YouTube](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
+[Aquí el enlace a YouTube](https://youtu.be/y9eq8vUzcj0) de la ejecución del proyecto.
 
 ### Pendientes a implementar (ToDo's)
+
 - Utilización de Shaders para procesamiento.
 - Gestor dinámico de línea de comandos para creación de objetos en la escena fuera del código.
 - Comunicación del buffer de OpenGL con CUDA para el ray tracing.
@@ -136,7 +139,7 @@ En lo personal me gustaría ampliar este proyecto con el camino adecuado.
 - [Introduction to OpenGL for Game Programmers by Jeremiah van Oosten.](https://www.3dgep.com/introduction-opengl/)
 - [Texturing and Lighting in OpenGL by Jeremiah van Oosten.](https://www.3dgep.com/texturing-and-lighting-in-opengl/)
 - [Using OpenGL Vertex Buffer Objects by Jeremiah van Oosten.](https://www.3dgep.com/using-opengl-vertex-buffer-objects/)
-- [OpenGL Vertex Buffer Object (VBO) by Song Ho Ahn (안성호)](https://www.songho.ca/opengl/gl_vbo.html)
+- [OpenGL Vertex Buffer Object (VBO) by Song Ho Ahn](https://www.songho.ca/opengl/gl_vbo.html)
 
 ## Recursos para consultar
 
@@ -157,6 +160,7 @@ En lo personal me gustaría ampliar este proyecto con el camino adecuado.
 - [Optimizing CUDA Applications by Jeremiah van Oosten.](https://www.3dgep.com/optimizing-cuda-applications/)
 
 ### Ray Tracing
+
 - [Ray Tracing in One Weekend by Peter Shirley.](https://github.com/petershirley/raytracinginoneweekend)
 - [Ray Tracing The Next Week by Peter Shirley.](https://github.com/petershirley/raytracingthenextweek)
 - [Ray Tracing The Rest of Your Life by Peter Shirley.](https://github.com/petershirley/raytracingtherestofyourlife)
